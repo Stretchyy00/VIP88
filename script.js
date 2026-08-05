@@ -8,17 +8,17 @@ const gamesDatabase = [
     tag: 'HOT', 
     tagClass: 'tag-hot', 
     rtp: '98.8%', 
-    path: 'games/majok/index.html' 
+    path: 'games/Majok/index.html' 
   },
   { 
     title: 'Spaceman', 
     vendor: 'Pragmatic Play', 
     category: 'Slot', 
-    icon: 'assets/logo/spaceman.png', 
+    icon: 'assets/logo/Spaceman.png', 
     tag: 'TOP', 
     tagClass: 'tag-hot', 
     rtp: '97.5%', 
-    path: 'games/spaceman/index.html' 
+    path: 'games/Spaceman/index.html' 
   },
   { 
     title: 'Megawil Live', 
@@ -28,7 +28,7 @@ const gamesDatabase = [
     tag: 'Live', 
     tagClass: 'tag-hot', 
     rtp: '99.1%', 
-    path: 'games/megawil/index.html' 
+    path: 'games/Megawil/index.html' 
   },
   { 
     title: 'Coming Soon!!', 
