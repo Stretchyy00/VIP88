@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Majok Ways 2 - Premium Skip Engine</title>
+    <title>Majok Ways 2 - Premium Emerald Skip Engine</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,6 @@
     <!-- 1. PRAGMATIC PLAY LOADING SCREEN -->
     <div id="pragmatic-loader" class="loader-overlay active">
         <div class="pragmatic-content">
-            <!-- Logo Pragmatic Play -->
             <div class="pragmatic-logo-wrapper">
                 <span class="pragmatic-text-white">PRAGMATIC </span>
                 <div class="pragmatic-circle-badge">
@@ -20,7 +19,6 @@
                 </div>
             </div>
 
-            <!-- Loading Bar Oranye Kuning (Tanpa Ring Spinner) -->
             <div class="pragmatic-loading-box">
                 <div class="pragmatic-loading-bar-bg">
                     <div class="pragmatic-loading-bar-fill"></div>
@@ -37,7 +35,7 @@
                 <div class="mahjong-progress-bar" id="mahjong-bar"></div>
             </div>
             <div class="mahjong-progress-text" id="mahjong-percent">0%</div>
-            <button id="get-started-btn" class="get-started-btn hidden" onclick="startGameSession()">GET STARTED</button>
+            <button id="get-started-btn" class="get-started-btn hidden" onclick="startGameSession()">MULAI PERMAINAN</button>
         </div>
     </div>
 
@@ -47,7 +45,7 @@
             <div class="dragon-art left">🐲</div>
             <div class="game-logo-title">
                 <span class="gold-text">MAJOK</span>
-                <span class="red-text">WAYS 2</span>
+                <span class="jade-text">WAYS 2</span>
             </div>
             <div class="dragon-art right">🐲</div>
         </div>
@@ -160,15 +158,15 @@
     <div id="bet-modal" class="bet-modal-overlay" onclick="closeBetMenu()">
         <div class="bet-bottom-sheet" onclick="event.stopPropagation()">
             <div class="bet-header">
-                <h3>Bet Options</h3>
+                <h3>Opsi Taruhan</h3>
                 <span class="close-bet" onclick="closeBetMenu()">×</span>
             </div>
             
             <div class="bet-table-header">
-                <span>Bet Size</span>
-                <span>Bet Level</span>
+                <span>Ukuran Bet</span>
+                <span>Level Bet</span>
                 <span>Base Bet</span>
-                <span>Bet Amount</span>
+                <span>Total Bet</span>
             </div>
 
             <div class="bet-selectors-container">
@@ -207,7 +205,7 @@
 
             <div class="bet-modal-footer">
                 <button class="bet-foot-btn max-btn" onclick="selectMaxBet()">Max Bet</button>
-                <button class="bet-foot-btn confirm-btn" onclick="confirmBetSelection()">Confirm</button>
+                <button class="bet-foot-btn confirm-btn" onclick="confirmBetSelection()">Konfirmasi</button>
             </div>
         </div>
     </div>
