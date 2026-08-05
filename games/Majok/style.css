@@ -21,10 +21,10 @@ body {
 .game-container {
     text-align: center;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh; /* Pakai dvh agar pas di layar mobile */
     max-width: 450px;
     background: linear-gradient(180deg, #6e0707 0%, #240303 35%, #0a0101 100%);
-    padding: 12px;    
+    padding: 6px 10px; /* Padding dikurangi sedikit agar elemen di dalamnya muat */    
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -32,6 +32,7 @@ body {
     border: none;
     border-radius: 0;
     box-shadow: none;
+    overflow: hidden; /* Biar tidak ada scrollbar liar */
 }
 
 .dragon-header {
@@ -39,11 +40,19 @@ body {
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(90deg, transparent 0%, #a81313 50%, transparent 100%);
-    padding: 6px 14px;
+    padding: 4px 10px; /* Diperkecil dari 6px 14px */
     border-radius: 10px;
-    margin-bottom: 5px;
+    margin-top: 2px;   /* Jaga jarak dari batas atas */
+    margin-bottom: 4px;
     border-bottom: 2px solid #ffd700;
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    flex-shrink: 0;    /* Mencegah header tergepengkan oleh flexbox */
+}
+
+.dragon-art {
+    font-size: 20px;   /* Diperkecil sedikit dari 26px agar header lebih ringkas */
+    text-shadow: 0 0 12px #ffcc00;
+    animation: dragonFloat 2s ease-in-out infinite alternate;
 }
 
 .dragon-art {
@@ -331,7 +340,13 @@ body {
     100% { transform: translateY(0); filter: brightness(1); }
 }
 
-.status-panel { display: flex; justify-content: space-between; gap: 6px; margin: 16px 0; }
+.status-panel { 
+    display: flex; 
+    justify-content: space-between; 
+    gap: 6px; 
+    margin: 6px 0;    /* Diperkecil marginnya dari 16px 0 */
+    flex-shrink: 0;   /* Mengunci panel agar tidak memotong layar */
+}
 .status-box {
     flex: 1; background: linear-gradient(180deg, #140202 0%, #050000 100%);
     border: 1px solid #4a0d0d; border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
@@ -346,8 +361,15 @@ body {
 .status-box.highlighted .value { color: #00ff66; text-shadow: 0 0 6px rgba(0, 255, 102, 0.6); }
 
 .control-panel-bottom {
-    display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); padding: 6px;
-    border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.15);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: rgba(0,0,0,0.6); 
+    padding: 4px 6px;  /* Diperkecil dari 6px */
+    border-radius: 50px; 
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    flex-shrink: 0;    /* Mencegah control panel bawah terpotong */
+    margin-bottom: 4px;
 }
 .side-control-btn {
     background: none; border: none; color: #d1b490; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 55px;
