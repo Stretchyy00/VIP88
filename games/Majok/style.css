@@ -663,12 +663,15 @@ body {
 /* ==========================================================================
    LOADING SCREENS (PRAGMATIC PLAY & MAHJONG WAYS 2)
    ========================================================================== */
+/* ==========================================================================
+   LOADING SCREENS (RESPONSIVE FOR ALL DEVICES)
+   ========================================================================== */
 .loader-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh; /* Menggunakan dvh agar pas di browser mobile */
     z-index: 99999;
     display: flex;
     justify-content: center;
@@ -676,6 +679,7 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease;
+    box-sizing: border-box;
 }
 
 .loader-overlay.active {
@@ -686,22 +690,27 @@ body {
 /* 1. PRAGMATIC PLAY SCREEN */
 #pragmatic-loader {
     background-color: #000000;
+    padding: 20px;
 }
 
 .pragmatic-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
+    gap: clamp(16px, 4vh, 30px); /* Jarak dinamis menyesuaikan tinggi layar */
+    width: 100%;
+    max-width: 400px;
 }
 
 .pragmatic-logo-wrapper {
     display: flex;
     align-items: center;
+    justify-content: center;
     font-family: 'Arial', 'Helvetica', sans-serif;
     font-weight: 800;
-    font-size: 26px;
+    font-size: clamp(18px, 5vw, 26px); /* Ukuran teks responsif */
     letter-spacing: 1px;
+    flex-wrap: nowrap;
 }
 
 .pragmatic-text-white {
@@ -714,17 +723,17 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #ff7b00;
+    border: clamp(2px, 0.5vw, 3px) solid #ff7b00;
     border-radius: 50%;
-    padding: 8px 14px;
+    padding: clamp(4px, 1.5vw, 8px) clamp(8px, 2.5vw, 14px);
     box-shadow: 0 0 12px rgba(255, 123, 0, 0.4);
 }
 
 .pragmatic-crown {
     position: absolute;
-    top: -16px;
+    top: clamp(-12px, -3vw, -16px);
     right: 2px;
-    font-size: 16px;
+    font-size: clamp(12px, 3.5vw, 16px);
     transform: rotate(15deg);
     filter: drop-shadow(0 0 2px #ff7b00);
 }
@@ -732,7 +741,7 @@ body {
 .pragmatic-text-play {
     color: #ffffff;
     font-weight: 800;
-    font-size: 20px;
+    font-size: clamp(14px, 4vw, 20px);
 }
 
 /* LOADING BAR PRAGMATIC PLAY */
@@ -741,10 +750,11 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    width: 100%;
 }
 
 .pragmatic-loading-bar-bg {
-    width: 240px;
+    width: clamp(180px, 70vw, 260px); /* Lebar progress bar responsif */
     height: 8px;
     background: #141414;
     border: 1px solid #ff7b00;
@@ -769,7 +779,7 @@ body {
 
 .pragmatic-loading-text {
     font-family: 'Arial Black', sans-serif;
-    font-size: 11px;
+    font-size: clamp(9px, 2.5vw, 11px);
     letter-spacing: 3px;
     color: #ffcb00;
     text-shadow: 0 0 8px rgba(255, 123, 0, 0.8);
@@ -780,7 +790,7 @@ body {
     background-color: #050302;
     flex-direction: column;
     justify-content: flex-end;
-    padding-bottom: 60px;
+    padding-bottom: clamp(24px, 8vh, 60px); /* Jarak bawah fleksibel */
     box-sizing: border-box;
 }
 
@@ -800,17 +810,17 @@ body {
 .mahjong-loader-content {
     position: relative;
     z-index: 2;
-    width: 80%;
-    max-width: 320px;
+    width: 85%;
+    max-width: 360px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: clamp(8px, 2vh, 14px);
 }
 
 .mahjong-progress-container {
     width: 100%;
-    height: 12px;
+    height: clamp(8px, 2.5vw, 12px);
     background: rgba(0, 0, 0, 0.7);
     border: 1.5px solid #ffd700;
     border-radius: 10px;
@@ -829,15 +839,15 @@ body {
 .mahjong-progress-text {
     font-family: 'Arial Black', sans-serif;
     color: #ffffff;
-    font-size: 14px;
+    font-size: clamp(11px, 3.5vw, 14px);
     text-shadow: 1px 1px 3px #000, 0 0 6px rgba(0,0,0,0.9);
 }
 
 .get-started-btn {
     width: 100%;
-    padding: 14px 0;
+    padding: clamp(10px, 3vw, 14px) 0;
     font-family: 'Arial Black', sans-serif;
-    font-size: 18px;
+    font-size: clamp(14px, 4vw, 18px);
     color: #3b0000;
     background: linear-gradient(180deg, #ffe054 0%, #ffd700 50%, #b8860b 100%);
     border: 2px solid #ffffff;
