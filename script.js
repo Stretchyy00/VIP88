@@ -472,18 +472,23 @@ function openGame(url) {
     return; 
   }
   
+  // Membuka game langsung di tab baru tanpa mode fullscreen browser
+  window.open(url, '_blank');
+}
+
+function closeGame() {
+  function openGame(url) {
+  if (!currentUser) { 
+    openAuthModal(); 
+    return; 
+  }
+  
   const container = document.getElementById('fullscreenGameContainer');
   const iframe = document.getElementById('gameFrame');
   
-  iframe.src = url;
-  container.style.display = 'block';
-
-  if (container.requestFullscreen) {
-    container.requestFullscreen().catch(err => console.log(err));
-  } else if (container.webkitRequestFullscreen) {
-    container.webkitRequestFullscreen();
-  } else if (container.msRequestFullscreen) {
-    container.msRequestFullscreen();
+  if (container && iframe) {
+    iframe.src = url;
+    container.style.display = 'block';
   }
 }
 
@@ -491,18 +496,11 @@ function closeGame() {
   const container = document.getElementById('fullscreenGameContainer');
   const iframe = document.getElementById('gameFrame');
   
-  iframe.src = '';
-  container.style.display = 'none';
-
-  if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-    if (document.exitFullscreen) {
-      document.exitFullscreen().catch(err => console.log(err));
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
+  if (container && iframe) {
+    iframe.src = '';
+    container.style.display = 'none';
   }
+}
 }
 
 /* ---------------- NEW TOP UP SYSTEM FLOW ---------------- */
