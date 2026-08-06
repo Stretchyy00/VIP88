@@ -21,32 +21,34 @@ body {
 .game-container {
     text-align: center;
     width: 100vw;
-    height: 100dvh; /* Pakai dvh agar pas di layar mobile */
+    height: 100dvh;
     max-width: 450px;
     background: linear-gradient(180deg, #6e0707 0%, #240303 35%, #0a0101 100%);
-    padding: 6px 10px; /* Padding dikurangi sedikit agar elemen di dalamnya muat */    
+    padding: 6px 10px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start; /* Mengubah space-between menjadi flex-start agar elemen lebih rapat */
+    gap: 4px;                   /* Mengontrol jarak antar elemen secara merata */
     border: none;
     border-radius: 0;
     box-shadow: none;
-    overflow: hidden; /* Biar tidak ada scrollbar liar */
+    overflow: hidden;
 }
 
+/* 2. Rapikan margin header */
 .dragon-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(90deg, transparent 0%, #a81313 50%, transparent 100%);
-    padding: 4px 10px; /* Diperkecil dari 6px 14px */
+    padding: 4px 10px;
     border-radius: 10px;
-    margin-top: 2px;   /* Jaga jarak dari batas atas */
-    margin-bottom: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px; /* Diperkecil dari 4px */
     border-bottom: 2px solid #ffd700;
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    flex-shrink: 0;    /* Mencegah header tergepengkan oleh flexbox */
+    flex-shrink: 0;
 }
 
 .dragon-art {
@@ -90,12 +92,13 @@ body {
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid #7a0b0b;
     border-radius: 20px;
-    padding: 5px 0;
+    padding: 4px 0;    /* Sedikit dikurangi */
     overflow: hidden;
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: 2px; /* Diperkecil dari 10px */
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.9);
     display: flex;
+    flex-shrink: 0;
 }
 
 .ticker-wrapper {
@@ -137,10 +140,12 @@ body {
     background: linear-gradient(180deg, #300202 0%, #120000 100%);
     border: 2px solid #d4af37;
     border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 14px;
+    padding: 6px 8px;   /* Padding disesuaikan */
+    margin-bottom: 4px; /* Diperkecil dari 14px */
     box-shadow: inset 0 3px 6px rgba(0,0,0,0.9), 0 4px 10px rgba(0,0,0,0.5);
+    flex-shrink: 0;
 }
+
 .multiplier-bar .mult {
     font-size: 16px;
     font-weight: 900;
