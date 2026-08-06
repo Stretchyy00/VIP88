@@ -242,10 +242,10 @@
         <!-- BUTTON SEBELAH-SEBELAHAN (DEPOSIT & WITHDRAW) -->
         <div class="action-btn-row">
           <button class="btn-action-side btn-depo-side" onclick="closeProfileModal(); openTopUpModal();">
-            <i class="fa-solid fa-wallet"></i> DEPOSIT
+          DEPOSIT
           </button>
           <button class="btn-action-side btn-wd-side" onclick="closeProfileModal(); openWithdrawModal();">
-            <i class="fa-solid fa-hand-holding-dollar"></i> WITHDRAW
+          WITHDRAW
           </button>
         </div>
 
@@ -293,16 +293,16 @@
           <select id="wdMethod" class="input-control">
             <option value="">-- Pilih Bank / E-Wallet --</option>
             <optgroup label="Bank Transfer Instant">
-              <option value="Bank BCA">Bank BCA (Transfer Auto)</option>
-              <option value="Bank Mandiri">Bank Mandiri (Transfer Auto)</option>
-              <option value="Bank BRI">Bank BRI (Transfer Auto)</option>
-              <option value="Bank BNI">Bank BNI (Transfer Auto)</option>
+              <option value="Bank BCA">Bank BCA</option>
+              <option value="Bank Mandiri">Bank Mandiri</option>
+              <option value="Bank BRI">Bank BRI</option>
+              <option value="Bank BNI">Bank BNI</option>
               <option value="Bank CIMB Niaga">Bank CIMB Niaga</option>
             </optgroup>
             <optgroup label="E-Wallet & Digital Money">
-              <option value="DANA">DANA (Auto Speed)</option>
-              <option value="OVO">OVO (Auto Speed)</option>
-              <option value="GoPay">GoPay (Auto Speed)</option>
+              <option value="DANA">DANA</option>
+              <option value="OVO">OVO</option>
+              <option value="GoPay">GoPay</option>
               <option value="ShopeePay">ShopeePay</option>
             </optgroup>
           </select>
@@ -343,13 +343,13 @@
         </div>
 
         <div class="field-group">
-          <label>Password Akun VIP (Konfirmasi Keamanan)</label>
+          <label>Password Akun VIP</label>
           <input type="password" id="wdPassConfirm" class="input-control" placeholder="Masukkan password akun Anda">
         </div>
 
         <div class="btn-wizard-group">
-          <button class="btn-back" onclick="backToWdStep1()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-          <button class="btn-submit btn-wd-gradient" style="flex:2;" onclick="processFinalWithdraw()">Konfirmasi Withdraw <i class="fa-solid fa-shield-halved"></i></button>
+          <button class="btn-back" onclick="backToWdStep1()">Kembali</button>
+          <button class="btn-submit btn-wd-gradient" style="flex:2;" onclick="processFinalWithdraw()">Konfirmasi Withdraw</button>
         </div>
       </div>
 
