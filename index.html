@@ -2,74 +2,51 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VIP SLOT PORTAL - RESMI & TERPERCAYA</title>
-  
-  <!-- Google Fonts & Font Awesome Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Teko:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Custom Style -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Platform</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- TOAST BANNER ALERT -->
-  <div id="toastNotification" class="toast-banner"></div>
-
-  <!-- STATE LOADING OVERLAY -->
-  <div id="loadingOverlay" class="loading-overlay">
-    <div class="spinner"></div>
-    <p>Memproses transaksi...</p>
-  </div>
-
-  <!-- TOP HEADER -->
+  <!-- Top Header Navigation -->
   <header class="top-header">
-    <div class="brand-logo" onclick="switchCategory('all')">VIPSLOT88</div>
-    
+    <div class="brand-logo" onclick="location.reload()">MyPlatform</div>
     <div class="user-panel">
-      <div class="balance-badge" onclick="openTopUpModal()" title="Klik untuk Deposit Saldo">
+      <div class="balance-badge" onclick="openWithdrawModal()">
         <i class="fa-solid fa-wallet"></i>
         <span id="userBalance">Rp 0</span>
       </div>
-      
-      <button class="btn-icon btn-logout" onclick="handleLogout()" title="Keluar">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13 4H18C19.1046 4 20 4.89543 20 6V18C20 19.1046 19.1046 20 18 20H13" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M3 12H14M14 12L10 8M14 12L10 16" stroke="#fca5a5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <button class="btn-icon" onclick="openProfileModal()" title="Profil Saya">
+        <i class="fa-solid fa-user" style="color: var(--text-primary);"></i>
       </button>
     </div>
   </header>
 
-  <!-- MARQUEE BAR -->
+  <!-- Marquee Running Text -->
   <div class="marquee-bar">
-    <div class="marquee-label">
-      <i class="fa-solid fa-bullhorn"></i> INFO
-    </div>
+    <div class="marquee-label"><i class="fa-solid fa-bullhorn"></i> INFO</div>
     <div class="marquee-content">
-      Selamat datang di Portal Slot Resmi VIP. Dapatkan Bonus Deposit New Member 100%! RTP Live Server terupdate real-time setiap menit.
+      Selamat datang di MyPlatform! Nikmati kemudahan transaksi deposit dan penarikan dana cepat 24 jam non-stop.
     </div>
   </div>
 
-  <!-- APP VIEWPORT -->
-  <div class="app-viewport">
+  <!-- Layout Utama -->
+  <main class="app-viewport">
     
-    <!-- SIDEBAR NAV (DESKTOP) -->
+    <!-- Sidebar Left Navigation -->
     <aside class="sidebar-nav">
       <div class="nav-category-item active" onclick="switchCategory('all', this)">
-        <i class="fa-solid fa-fire icon-nav"></i> Populer
+        <i class="fa-solid fa-house icon-nav"></i> Utama
       </div>
-      <div class="nav-category-item" onclick="switchCategory('Slot', this)">
-        <i class="fa-solid fa-gamepad icon-nav"></i> Slot Online
+      <div class="nav-category-item" onclick="openProfileModal()">
+        <i class="fa-solid fa-user icon-nav"></i> Akun Profil
       </div>
-      <div class="nav-category-item" onclick="switchCategory('Casino', this)">
-        <i class="fa-solid fa-dice icon-nav"></i> Live Casino
+      <div class="nav-category-item" onclick="openWithdrawModal()">
+        <i class="fa-solid fa-money-bill-transfer icon-nav"></i> Penarikan (WD)
       </div>
-      <div class="nav-category-item" onclick="switchCategory('Arcade', this)">
-        <i class="fa-solid fa-bullseye icon-nav"></i> Arcade Game
+      <div class="nav-category-item" onclick="openTopUpModal()">
+        <i class="fa-solid fa-credit-card icon-nav"></i> Deposit / Top Up
       </div>
       <div class="nav-category-item" onclick="openPromoModal()">
         <i class="fa-solid fa-gift icon-nav"></i> Promosi
@@ -77,119 +54,340 @@
       <div class="nav-category-item" onclick="openChatModal()">
         <i class="fa-solid fa-headset icon-nav"></i> Live Chat
       </div>
-      <div class="nav-category-item" onclick="openProfileModal()">
-        <i class="fa-solid fa-user icon-nav"></i> Akun Profil
-      </div>
-      <div class="nav-category-item" onclick="openWithdrawModal()">
-        <i class="fa-solid fa-money-bill-transfer icon-nav"></i> Withdraw
-      </div>
     </aside>
 
-    <!-- MAIN STAGE -->
-    <main class="main-stage">
-
-      <!-- BANNER CAROUSEL -->
-      <div class="banner-carousel" id="bannerCarousel">
+    <!-- Main Content Area -->
+    <section class="main-stage">
+      
+      <!-- Banner Carousel -->
+      <div class="banner-carousel">
         <div class="carousel-track" id="carouselTrack">
-          
-          <div class="carousel-slide" style="background-image: url('assets/banner/Banner1.png');">
-            <div class="slide-overlay"></div>
+          <div class="carousel-slide" style="background-image: linear-gradient(to top, rgba(7,9,14,0.9), transparent), url('https://via.placeholder.com/800x200/151b2a/fbbf24?text=Promo+Member+VIP');">
             <div class="slide-caption">
-              <h3>WELCOME BONUS 100%</h3>
-              <p>Khusus Anggota Baru VIP Slot Portal Hari Ini</p>
+              <h3>BONUS NEW MEMBER</h3>
+              <p>Dapatkan tambahan saldo untuk pendaftaran akun baru hari ini!</p>
             </div>
           </div>
-
-          <div class="carousel-slide" style="background-image: url('assets/banner/Banner2.png');">
-            <div class="slide-overlay"></div>
+          <div class="carousel-slide" style="background-image: linear-gradient(to top, rgba(7,9,14,0.9), transparent), url('https://via.placeholder.com/800x200/0f1420/22c55e?text=Penarikan+Instant');">
             <div class="slide-caption">
-              <h3>EVENT DAILY JACKPOT</h3>
-              <p>Total Hadiah Ratusan Juta Rupiah Setiap Malam</p>
+              <h3>WITHDRAW CEPTA & AMAN</h3>
+              <p>Proses penarikan dana langsung cair ke E-Wallet atau Bank Lokal.</p>
             </div>
           </div>
-
-          <div class="carousel-slide" style="background-image: url('assets/banner/Banner3.png');">
-            <div class="slide-overlay"></div>
-            <div class="slide-caption">
-              <h3>DEPOSIT AUTO 1 DETIK</h3>
-              <p>Bisa Pakai QRIS, Bank BCA, Mandiri & E-Wallet</p>
-            </div>
-          </div>
-
         </div>
-
-        <div class="carousel-pagination" id="carouselDots">
-          <div class="page-dot active" onclick="goToSlide(0)"></div>
-          <div class="page-dot" onclick="goToSlide(1)"></div>
-          <div class="page-dot" onclick="goToSlide(2)"></div>
+        <div class="carousel-pagination">
+          <span class="page-dot active" onclick="goToSlide(0)"></span>
+          <span class="page-dot" onclick="goToSlide(1)"></span>
         </div>
       </div>
 
-      <!-- JACKPOT COUNTER -->
+      <!-- Jackpot Counter Header -->
       <div class="jackpot-ticker-card">
-        <span class="jackpot-title"><i class="fa-solid fa-trophy"></i> GRAND JACKPOT</span>
-        <span class="jackpot-counter" id="jackpotVal">Rp 1.482.930.500</span>
+        <div class="jackpot-title">
+          <i class="fa-solid fa-crown"></i> TOTAL JACKPOT PLATFORM
+        </div>
+        <div class="jackpot-counter" id="jackpotVal">
+          Rp 1.482.930.500
+        </div>
       </div>
 
-      <!-- PROVIDER SCROLL -->
+      <!-- Provider Filter Chips -->
       <div class="provider-scroll">
-        <div class="provider-chip active" onclick="filterProvider('all', this)">Semua</div>
+        <div class="provider-chip active" onclick="filterProvider('all', this)">Semua Provider</div>
         <div class="provider-chip" onclick="filterProvider('Pragmatic Play', this)">Pragmatic Play</div>
         <div class="provider-chip" onclick="filterProvider('PG Soft', this)">PG Soft</div>
         <div class="provider-chip" onclick="filterProvider('Habanero', this)">Habanero</div>
-        <div class="provider-chip" onclick="filterProvider('Spribe', this)">Spribe</div>
       </div>
 
-      <!-- GAMES GRID -->
-      <div class="games-layout-grid" id="gamesGrid">
-        <!-- Rendered via JavaScript -->
+      <!-- Games Grid Render Stage -->
+      <div id="gamesGrid" class="games-layout-grid">
+        <!-- Rendered by JS -->
       </div>
-    </main>
-  </div>
 
-  <!-- MODERN FLOATING BOTTOM NAV (MOBILE) -->
+    </section>
+
+  </main>
+
+  <!-- ---------------- FLOATING BOTTOM NAV (MOBILE) ---------------- -->
   <div class="bottom-nav-wrapper">
-    <nav class="mobile-bottom-nav">
-      <div class="bottom-nav-item active" onclick="switchCategory('all')">
-        <div class="nav-icon-container">
-          <i class="fa-solid fa-house"></i>
-        </div>
+    <div class="mobile-bottom-nav">
+      <div class="bottom-nav-item active" onclick="switchCategory('all', null)">
+        <i class="fa-solid fa-house"></i>
         <span>Beranda</span>
       </div>
-
       <div class="bottom-nav-item" onclick="openPromoModal()">
-        <div class="nav-icon-container">
-          <i class="fa-solid fa-gift"></i>
-        </div>
-        <span>Promosi</span>
+        <i class="fa-solid fa-gift"></i>
+        <span>Promo</span>
       </div>
-
-      <!-- Floating Main Action Button (Deposit) -->
-      <div class="deposit-float-wrapper">
-        <button class="btn-deposit-float" onclick="openTopUpModal()">
-          <i class="fa-solid fa-bolt"></i>
-        </button>
-        <span class="deposit-float-label">DEPOSIT</span>
+      <div class="deposit-float-wrapper" onclick="openTopUpModal()">
+        <button class="btn-deposit-float"><i class="fa-solid fa-plus"></i></button>
+        <span class="deposit-float-label">TOP UP</span>
       </div>
-
       <div class="bottom-nav-item" onclick="openWithdrawModal()">
-        <div class="nav-icon-container">
-          <i class="fa-solid fa-money-bill-transfer"></i>
-        </div>
-        <span>Withdraw</span>
+        <i class="fa-solid fa-money-bill-transfer"></i>
+        <span>WD</span>
       </div>
-
       <div class="bottom-nav-item" onclick="openProfileModal()">
-        <div class="nav-icon-container">
-          <i class="fa-solid fa-user-gear"></i>
-        </div>
-        <span>Akun</span>
+        <i class="fa-solid fa-user"></i>
+        <span>Profil</span>
       </div>
-    </nav>
+    </div>
   </div>
 
-  <!-- AUTH MODAL -->
-  <div class="overlay-container" id="authOverlay" style="display: flex;">
+  <!-- ---------------- MODAL PROFIL ---------------- -->
+  <div id="profileModal" class="overlay-container">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h4>PROFIL SAYA</h4>
+        <span style="cursor: pointer; color: var(--text-muted);" onclick="closeProfileModal()"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="field-group">
+        <label>Username Akun</label>
+        <input type="text" id="profUser" class="input-control" readonly>
+      </div>
+      <div class="field-group">
+        <label>Saldo Tersedia</label>
+        <input type="text" id="profBalance" class="input-control" readonly style="color: var(--gold-light); font-weight: 700;">
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 15px;">
+        <button class="btn-submit" onclick="closeProfileModal(); openWithdrawModal();">TARIK SALDO (WD)</button>
+        <button class="btn-submit" style="background: var(--accent-red); color: #fff;" onclick="handleLogout()">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- MODAL WITHDRAW (WD) ---------------- -->
+  <div id="withdrawModal" class="overlay-container">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h4>PENARIKAN DANA (WD)</h4>
+        <span style="cursor: pointer; color: var(--text-muted);" onclick="closeWithdrawModal()"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+
+      <!-- STEP 1: FORM INPUT -->
+      <div id="stepWdInput">
+        <div class="field-group">
+          <label>Bank / E-Wallet Tujuan</label>
+          <select id="wdBank" class="input-control">
+            <option value="" disabled selected>Pilih Metode Pembayaran</option>
+            <option value="DANA">DANA</option>
+            <option value="GoPay">GoPay</option>
+            <option value="OVO">OVO</option>
+            <option value="ShopeePay">ShopeePay</option>
+            <option value="Bank BCA">Bank BCA</option>
+            <option value="Bank Mandiri">Bank Mandiri</option>
+            <option value="Bank BRI">Bank BRI</option>
+            <option value="Bank BNI">Bank BNI</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Nomor Rekening / E-Wallet</label>
+          <input type="number" id="wdAccountNum" class="input-control" placeholder="Contoh: 081234567890">
+        </div>
+
+        <div class="field-group">
+          <label>Nama Pemilik Rekening</label>
+          <input type="text" id="wdAccountName" class="input-control" placeholder="Nama sesuai akun bank/e-wallet">
+        </div>
+
+        <div class="field-group">
+          <label>Jumlah Penarikan (Rp)</label>
+          <input type="number" id="wdAmount" class="input-control" placeholder="Min. Rp 50.000" min="50000">
+        </div>
+
+        <span class="section-label">Pilih Nominal Cepat:</span>
+        <div class="quick-amount-grid">
+          <button class="quick-btn" onclick="selectQuickWdAmount(50000)">50.000</button>
+          <button class="quick-btn" onclick="selectQuickWdAmount(100000)">100.000</button>
+          <button class="quick-btn" onclick="selectQuickWdAmount(500000)">500.000</button>
+          <button class="quick-btn" onclick="selectQuickWdAmount('all')">Semua Saldo</button>
+        </div>
+
+        <button class="btn-submit" onclick="processWithdrawInput()">KONFIRMASI PENARIKAN</button>
+      </div>
+
+      <!-- STEP 2: NOTIFIKASI SUKSES -->
+      <div id="stepWdSuccess" style="display: none; text-align: center; padding: 10px 0;">
+        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+        <h3 style="color: var(--gold-light); font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 5px;">PERMINTAAN DIKIRIM</h3>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Penarikan saldo Anda sedang diproses oleh sistem.</p>
+
+        <div class="summary-card">
+          <div class="summary-row">
+            <span>ID Transaksi:</span>
+            <strong id="wdTrxId" style="color: #fff;">-</strong>
+          </div>
+          <div class="summary-row">
+            <span>Metode:</span>
+            <strong id="wdTargetBank" style="color: #fff;">-</strong>
+          </div>
+          <div class="summary-row">
+            <span>Tujuan:</span>
+            <strong id="wdTargetAcc" style="color: #fff;">-</strong>
+          </div>
+          <div class="summary-row">
+            <span>Jumlah WD:</span>
+            <strong id="wdSuccessAmount" style="color: var(--gold-light);">-</strong>
+          </div>
+          <div class="summary-row total">
+            <span>Sisa Saldo:</span>
+            <strong id="wdFinalBalance" style="color: var(--accent-green);">-</strong>
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="closeWithdrawModal()">TUTUP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- MODAL DEPOSIT / TOP UP ---------------- -->
+  <div id="topupModal" class="overlay-container">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h4>DEPOSIT / TOP UP SALDO</h4>
+        <span style="cursor: pointer; color: var(--text-muted);" onclick="closeTopUpModal()"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+
+      <div id="stepInput">
+        <div class="field-group">
+          <label>Nominal Top Up (Rp)</label>
+          <input type="number" id="manualAmount" class="input-control" placeholder="Min. Rp 10.000" min="10000">
+        </div>
+
+        <span class="section-label">Pilih Nominal Cepat:</span>
+        <div class="quick-amount-grid">
+          <button class="quick-btn" onclick="selectQuickAmount(20000, this)">20.000</button>
+          <button class="quick-btn" onclick="selectQuickAmount(50000, this)">50.000</button>
+          <button class="quick-btn" onclick="selectQuickAmount(100000, this)">100.000</button>
+          <button class="quick-btn" onclick="selectQuickAmount(250000, this)">250.000</button>
+        </div>
+
+        <span class="section-label">Pilih Metode Pembayaran:</span>
+        <div class="payment-method-list">
+          <div class="method-category">QRIS / E-WALLET</div>
+          <div class="method-item" onclick="selectPaymentMethod(this, 'QRIS Instant')">
+            <span><i class="fa-solid fa-qrcode"></i> QRIS (BCA, OVO, DANA)</span>
+            <i class="fa-solid fa-chevron-right" style="font-size:0.7rem;"></i>
+          </div>
+          <div class="method-item" onclick="selectPaymentMethod(this, 'DANA Direct')">
+            <span><i class="fa-solid fa-wallet"></i> DANA</span>
+            <i class="fa-solid fa-chevron-right" style="font-size:0.7rem;"></i>
+          </div>
+
+          <div class="method-category">TRANSFER BANK</div>
+          <div class="method-item" onclick="selectPaymentMethod(this, 'Bank BCA')">
+            <span><i class="fa-solid fa-building-columns"></i> Bank BCA</span>
+            <i class="fa-solid fa-chevron-right" style="font-size:0.7rem;"></i>
+          </div>
+          <div class="method-item" onclick="selectPaymentMethod(this, 'Bank Mandiri')">
+            <span><i class="fa-solid fa-building-columns"></i> Bank Mandiri</span>
+            <i class="fa-solid fa-chevron-right" style="font-size:0.7rem;"></i>
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="processTopUpInput()">BAYAR SEKARANG</button>
+      </div>
+
+      <div id="stepSummary" style="display: none;">
+        <div class="timer-box">
+          Batas Waktu Pembayaran: <span id="paymentTimer">02:00</span>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-row">
+            <span>Nominal Top Up:</span>
+            <strong id="summaryNominal">Rp 0</strong>
+          </div>
+          <div class="summary-row">
+            <span>Biaya Admin:</span>
+            <strong id="summaryAdmin">Rp 0</strong>
+          </div>
+          <div class="summary-row total">
+            <span>Total Pembayaran:</span>
+            <strong id="summaryTotal" style="color: var(--gold-light);">Rp 0</strong>
+          </div>
+        </div>
+
+        <div class="paycode-box">
+          <div class="paycode-label">KODE PEMBAYARAN / REKENING:</div>
+          <div class="paycode-row">
+            <strong id="payCodeVal">883012345678</strong>
+            <button class="btn-copy" onclick="copyPayCode()">SALIN</button>
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="simulateWebhookSuccess()">KONFIRMASI SUDAH BAYAR</button>
+      </div>
+
+      <div id="stepSuccess" style="display: none; text-align: center; padding: 10px 0;">
+        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+        <h3 style="color: var(--gold-light); font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 5px;">TOP UP BERHASIL!</h3>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Saldo Anda telah berhasil ditambahkan ke akun.</p>
+
+        <div class="summary-card">
+          <div class="summary-row">
+            <span>ID Transaksi:</span>
+            <strong id="successTrxId" style="color: #fff;">-</strong>
+          </div>
+          <div class="summary-row">
+            <span>Jumlah Masuk:</span>
+            <strong id="successAmount" style="color: var(--gold-light);">-</strong>
+          </div>
+          <div class="summary-row total">
+            <span>Total Saldo Sekarang:</span>
+            <strong id="successFinalBalance" style="color: var(--accent-green);">-</strong>
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="closeTopUpModal()">SELESAI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- MODAL PROMO ---------------- -->
+  <div id="promoModal" class="overlay-container">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h4>PROMOSI TERSEDIA</h4>
+        <span style="cursor: pointer; color: var(--text-muted);" onclick="closePromoModal()"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      
+      <div class="promo-card">
+        <h5>Bonus New Member 100%</h5>
+        <p>Klaim bonus 100% deposit pertama khusus untuk pengguna baru!</p>
+        <button class="btn-submit" style="margin-top: 8px; padding: 6px;" onclick="claimPromo('Bonus New Member 100%')">KLAIM PROMO</button>
+      </div>
+
+      <div class="promo-card">
+        <h5>Cashback Harian 0.8%</h5>
+        <p>Dapatkan pengembalian saldo otomatis setiap hari tanpa batas minimal transaksi.</p>
+        <button class="btn-submit" style="margin-top: 8px; padding: 6px;" onclick="claimPromo('Cashback Harian 0.8%')">KLAIM PROMO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- MODAL LIVE CHAT ---------------- -->
+  <div id="chatModal" class="overlay-container">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h4>LIVE CHAT CS VIP</h4>
+        <span style="cursor: pointer; color: var(--text-muted);" onclick="closeChatModal()"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+
+      <div class="chat-box" id="chatBox">
+        <div class="msg-bubble msg-cs">Halo! Selamat datang di layanan Customer Service VIP. Ada yang bisa kami bantu?</div>
+      </div>
+
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" class="input-control" placeholder="Tulis pesan..." onkeypress="handleChatKey(event)">
+        <button class="btn-submit" style="width: auto; margin-top: 0; padding: 0 15px;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- AUTHENTICATION OVERLAY ---------------- -->
+  <div id="authOverlay" class="overlay-container">
     <div class="modal-card">
       <div class="tab-switcher">
         <div class="tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">LOGIN</div>
@@ -222,255 +420,26 @@
     </div>
   </div>
 
-  <!-- PROFILE MODAL -->
-  <div class="overlay-container" id="profileModal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h4>PROFIL ANGGOTA VIP</h4>
-        <span style="cursor:pointer;" onclick="closeProfileModal()"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-      <div class="field-group">
-        <label>Username</label>
-        <input type="text" id="profUser" class="input-control" readonly>
-      </div>
-      <div class="field-group">
-        <label>Status Akun</label>
-        <input type="text" value="VIP PLATINUM MEMBER" class="input-control" style="color:var(--gold-light); font-weight:bold;" readonly>
-      </div>
-      <div class="field-group">
-        <label>Total Saldo Virtual</label>
-        <input type="text" id="profBalance" class="input-control" readonly>
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <button class="btn-submit" style="flex:1;" onclick="openTopUpModal(); closeProfileModal();">DEPOSIT</button>
-        <button class="btn-submit" style="flex:1; background: var(--accent-cyan); color: #000;" onclick="openWithdrawModal(); closeProfileModal();">WITHDRAW</button>
-      </div>
-      <button class="btn-submit" style="background:#dc2626; color:#fff; margin-top:8px;" onclick="handleLogout()">LOGOUT</button>
-    </div>
-  </div>
-
-  <!-- PROMO MODAL -->
-  <div class="overlay-container" id="promoModal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h4>PROMOSI & BONUS VIP</h4>
-        <span style="cursor:pointer;" onclick="closePromoModal()"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-      <div class="promo-card">
-        <h5>🎁 BONUS NEW MEMBER 100%</h5>
-        <p>Klaim tambahan saldo 100% hingga Rp 1.000.000 pada deposit pertama Anda.</p>
-        <button class="btn-submit" style="margin-top:6px; padding:6px;" onclick="claimPromo('Bonus New Member 100%')">KLAIM PROMO</button>
-      </div>
-      <div class="promo-card">
-        <h5>🔥 BONUS REBATE HARIAN 0.8%</h5>
-        <p>Pembagian bonus cashback otomatis dibagikan setiap jam 12:00 WIB.</p>
-        <button class="btn-submit" style="margin-top:6px; padding:6px;" onclick="claimPromo('Rebate Harian 0.8%')">KLAIM PROMO</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LIVE CHAT MODAL -->
-  <div class="overlay-container" id="chatModal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h4>LIVE CHAT DUKUNGAN 24/7</h4>
-        <span style="cursor:pointer;" onclick="closeChatModal()"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-      <div class="chat-box" id="chatBox">
-        <div class="msg-bubble msg-cs">
-          Halo! Selamat datang di layanan Customer Service VIP. Ada yang bisa kami bantu mengenai deposit, withdraw, promo, atau kendala game?
-        </div>
-      </div>
-      <div class="chat-input-row">
-        <input type="text" id="chatInput" class="input-control" placeholder="Ketik pesan (misal: deposit, bonus)..." onkeypress="handleChatKey(event)">
-        <button class="btn-submit" style="width:auto; margin-top:0; padding:0 16px;" onclick="sendChatMessage()">KIRIM</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOPUP MODAL FLOW -->
-  <div class="overlay-container" id="topupModal">
-    <div class="modal-card modal-topup">
-      <div class="modal-head">
-        <h4>TOP UP SALDO</h4>
-        <span style="cursor:pointer; font-weight:700;" onclick="closeTopUpModal()"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-
-      <!-- STEP 1: INPUT NOMINAL & METODE -->
-      <div id="stepInput">
-        <label class="section-label">Pilihan Cepat (Quick Amount)</label>
-        <div class="quick-amount-grid">
-          <button type="button" class="quick-btn" onclick="selectQuickAmount(20000, this)">Rp20.000</button>
-          <button type="button" class="quick-btn" onclick="selectQuickAmount(50000, this)">Rp50.000</button>
-          <button type="button" class="quick-btn" onclick="selectQuickAmount(100000, this)">Rp100.000</button>
-          <button type="button" class="quick-btn" onclick="selectQuickAmount(500000, this)">Rp500.000</button>
-        </div>
-
-        <div class="field-group">
-          <label>Input Manual (Min. Rp10.000)</label>
-          <input type="number" id="manualAmount" class="input-control" placeholder="Masukkan nominal (contoh: 75000)" min="10000">
-        </div>
-
-        <label class="section-label">Pilih Metode Pembayaran</label>
-        <div class="payment-method-list">
-          <div class="method-category">Virtual Account</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'VA BCA')">🏦 Virtual Account BCA</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'VA Mandiri')">🏦 Virtual Account Mandiri</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'VA BRI')">🏦 Virtual Account BRI</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'VA BNI')">🏦 Virtual Account BNI</div>
-
-          <div class="method-category">Instant Transfer / E-Wallet</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'QRIS Instant')">⚡ QRIS Instant Transfer</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'E-Wallet DANA/OVO')">📱 E-Wallet (DANA, OVO, ShopeePay)</div>
-
-          <div class="method-category">Minimarket</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'Indomaret')">🏪 Indomaret</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'Alfamart')">🏪 Alfamart</div>
-
-          <div class="method-category">Kartu</div>
-          <div class="method-item" onclick="selectPaymentMethod(this, 'Kartu Debit/Kredit')">💳 Kartu Debit / Kredit</div>
-        </div>
-
-        <button class="btn-submit" style="margin-top: 15px;" onclick="processTopUpInput()">Lanjut / Konfirmasi</button>
-      </div>
-
-      <!-- STEP 2: RINGKASAN & INSTRUKSI PEMBAYARAN -->
-      <div id="stepSummary" style="display: none;">
-        <div class="timer-box">
-          Batas Waktu Pembayaran: <span id="paymentTimer">10:00</span>
-        </div>
-
-        <div class="summary-card">
-          <div class="summary-row"><span>Nominal Top-Up:</span><strong id="summaryNominal">Rp0</strong></div>
-          <div class="summary-row"><span>Biaya Admin:</span><strong id="summaryAdmin">Rp0</strong></div>
-          <div class="summary-row total"><span>Total Bayar:</span><strong id="summaryTotal">Rp0</strong></div>
-        </div>
-
-        <div class="paycode-box">
-          <span class="paycode-label">Kode Bayar / Nomor VA:</span>
-          <div class="paycode-row">
-            <strong id="payCodeVal">88300012345678</strong>
-            <button class="btn-copy" onclick="copyPayCode()">Salin</button>
-          </div>
-        </div>
-
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleAccordion(this)">Petunjuk Pembayaran ▾</div>
-          <div class="accordion-body">
-            <ol style="padding-left: 15px; font-size:0.75rem; color:var(--text-secondary);">
-              <li>Buka aplikasi m-Banking / ATM / Kasir minimarket.</li>
-              <li>Pilih menu Transfer / Pembayaran ke Nomor VA / Kode Bayar di atas.</li>
-              <li>Masukkan nominal sesuai dengan Total Bayar.</li>
-              <li>Simpan bukti transaksi setelah selesai.</li>
-            </ol>
-          </div>
-        </div>
-
-        <button class="btn-submit" style="margin-top: 12px;" onclick="simulateWebhookSuccess()">Simulasi Pembayaran Selesai</button>
-      </div>
-
-      <!-- STEP 3: STATUS / BUKTI TRANSAKSI -->
-      <div id="stepSuccess" style="display: none; text-align: center;">
-        <div class="success-icon">✓</div>
-        <h3 style="color: #22c55e; margin-bottom: 5px;">Top Up Berhasil!</h3>
-        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Transaksi kamu telah diverifikasi oleh sistem.</p>
-
-        <div class="summary-card">
-          <div class="summary-row"><span>ID Transaksi:</span><strong id="successTrxId">-</strong></div>
-          <div class="summary-row"><span>Nominal Tambah:</span><strong id="successAmount" style="color:#22c55e;">Rp0</strong></div>
-          <div class="summary-row"><span>Saldo Saat Ini:</span><strong id="successFinalBalance">Rp0</strong></div>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-top: 15px;">
-          <button class="btn-submit" style="background: #334155; color: #fff;" onclick="showToast('Struk berhasil diunduh!', 'success')">Download Struk</button>
-          <button class="btn-submit" onclick="closeTopUpModal()">Selesai</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- WITHDRAW MODAL FLOW -->
-  <div class="overlay-container" id="withdrawModal">
-    <div class="modal-card modal-topup">
-      <div class="modal-head">
-        <h4>PENARIKAN SALDO (WITHDRAW)</h4>
-        <span style="cursor:pointer; font-weight:700;" onclick="closeWithdrawModal()"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-
-      <!-- STEP 1: INPUT FORM -->
-      <div id="stepWdInput">
-        <div class="field-group">
-          <label>Pilih Bank / E-Wallet Tujuan</label>
-          <select id="wdBank" class="input-control" style="background:#07090e; color:#fff;">
-            <option value="">-- Pilih Bank / E-Wallet --</option>
-            <option value="Bank BCA">Bank BCA</option>
-            <option value="Bank Mandiri">Bank Mandiri</option>
-            <option value="Bank BRI">Bank BRI</option>
-            <option value="Bank BNI">Bank BNI</option>
-            <option value="DANA">DANA</option>
-            <option value="OVO">OVO</option>
-            <option value="Gopay">GoPay</option>
-            <option value="ShopeePay">ShopeePay</option>
-          </select>
-        </div>
-
-        <div class="field-group">
-          <label>Nomor Rekening / E-Wallet</label>
-          <input type="number" id="wdAccountNum" class="input-control" placeholder="Contoh: 1234567890" required>
-        </div>
-
-        <div class="field-group">
-          <label>Nama Pemilik Rekening (Sesuai Akun)</label>
-          <input type="text" id="wdAccountName" class="input-control" placeholder="Contoh: Budi Santoso" required>
-        </div>
-
-        <div class="field-group">
-          <label>Nominal Penarikan (Min. Rp50.000)</label>
-          <input type="number" id="wdAmount" class="input-control" placeholder="Masukkan nominal (contoh: 50000)" min="50000" required>
-        </div>
-
-        <div class="quick-amount-grid" style="margin-top: 8px;">
-          <button type="button" class="quick-btn" onclick="selectQuickWdAmount(50000)">Rp50.000</button>
-          <button type="button" class="quick-btn" onclick="selectQuickWdAmount(100000)">Rp100.000</button>
-          <button type="button" class="quick-btn" onclick="selectQuickWdAmount(500000)">Rp500.000</button>
-          <button type="button" class="quick-btn" onclick="selectQuickWdAmount('all')">Tarik Semua</button>
-        </div>
-
-        <button class="btn-submit" style="margin-top: 15px;" onclick="processWithdrawInput()">Kirim Permintaan WD</button>
-      </div>
-
-      <!-- STEP 2: BUKTI / STATUS SUKSES -->
-      <div id="stepWdSuccess" style="display: none; text-align: center;">
-        <div class="success-icon" style="background:#06b6d4;">✓</div>
-        <h3 style="color: #06b6d4; margin-bottom: 5px;">Withdraw Diproses!</h3>
-        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Permintaan penarikan dana sedang diproses oleh tim keuangan (Estimasi 1-3 menit).</p>
-
-        <div class="summary-card">
-          <div class="summary-row"><span>ID Transaksi:</span><strong id="wdTrxId">-</strong></div>
-          <div class="summary-row"><span>Tujuan:</span><strong id="wdTargetBank">-</strong></div>
-          <div class="summary-row"><span>No. Rekening:</span><strong id="wdTargetAcc">-</strong></div>
-          <div class="summary-row"><span>Nominal WD:</span><strong id="wdSuccessAmount" style="color:#06b6d4;">Rp0</strong></div>
-          <div class="summary-row"><span>Sisa Saldo:</span><strong id="wdFinalBalance">Rp0</strong></div>
-        </div>
-
-        <button class="btn-submit" onclick="closeWithdrawModal()">Selesai</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- CUSTOM NOTIFY MODAL -->
-  <div class="overlay-container" id="notifyOverlay">
+  <!-- ---------------- NOTIFY MODAL OVERLAY ---------------- -->
+  <div id="notifyOverlay" class="overlay-container">
     <div class="notify-modal-card">
-      <div class="notify-icon" id="notifyIcon">💡</div>
-      <div class="notify-title" id="notifyTitle">Pemberitahuan</div>
-      <div class="notify-desc" id="notifyDesc">Pesan notifikasi.</div>
+      <div class="notify-icon" id="notifyIcon">✨</div>
+      <div class="notify-title" id="notifyTitle">Notifikasi</div>
+      <div class="notify-desc" id="notifyDesc">Pesan sistem</div>
       <button class="btn-submit" onclick="closeNotify()">OK</button>
     </div>
   </div>
 
-  <!-- Script JS -->
+  <!-- ---------------- SYSTEM LOADING & TOAST ---------------- -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <span>MEMPROSES SISTEM...</span>
+  </div>
+
+  <div id="toastNotification" class="toast-banner">
+    <span id="toastMsg">Notifikasi</span>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

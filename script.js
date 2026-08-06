@@ -6,7 +6,6 @@ const gamesDatabase = [
     category: 'Slot', 
     icon: 'assets/logo/majok.png', 
     tag: 'HOT', 
-    tagClass: 'tag-hot', 
     rtp: '98.8%', 
     path: 'games/Majok/index.html'
   },
@@ -16,7 +15,6 @@ const gamesDatabase = [
     category: 'Slot', 
     icon: 'assets/logo/spaceman.png', 
     tag: 'TOP', 
-    tagClass: 'tag-hot', 
     rtp: '97.5%', 
     path: 'games/Spaceman/index.html' 
   },
@@ -26,7 +24,6 @@ const gamesDatabase = [
     category: 'Arcade', 
     icon: 'assets/logo/Megawil.png', 
     tag: 'Live', 
-    tagClass: 'tag-hot', 
     rtp: '99.1%', 
     path: 'games/Megawil/index.html' 
   },
@@ -36,27 +33,6 @@ const gamesDatabase = [
     category: 'Arcade', 
     icon: 'assets/logo/kv5.png', 
     tag: '', 
-    tagClass: '', 
-    rtp: '0%', 
-    path: 'games/coming-soon/index.html' 
-  },
-  { 
-    title: 'Coming Soon!!', 
-    vendor: 'Pragmatic Play', 
-    category: 'Casino', 
-    icon: 'assets/logo/baccarat.png', 
-    tag: 'LIVE', 
-    tagClass: 'tag-hot', 
-    rtp: '0%', 
-    path: 'games/coming-soon/index.html' 
-  },
-  { 
-    title: 'Coming Soon!!', 
-    vendor: 'PG Soft', 
-    category: 'Casino', 
-    icon: 'assets/logo/roulette.png', 
-    tag: '', 
-    tagClass: '', 
     rtp: '0%', 
     path: 'games/coming-soon/index.html' 
   }
@@ -68,10 +44,7 @@ let jackpotValue = 1482930500;
 let activeCategoryFilter = 'all';
 let activeProviderFilter = 'all';
 
-/* ---------------------------------------------------
-   1. SISTEM SINKRONISASI SALDO LINTAS TAB / IFRAME
-   --------------------------------------------------- */
-
+/* ---------------- 1. SISTEM SINKRONISASI SALDO LINTAS TAB / IFRAME ---------------- */
 window.addEventListener('storage', function(e) {
   if (e.key === 'users_db') {
     let db = JSON.parse(e.newValue) || {};
@@ -136,56 +109,11 @@ function closeNotify() {
 const track = document.getElementById('carouselTrack');
 const dots = document.querySelectorAll('.page-dot');
 let currentIndex = 0;
-let startX = 0;
-let currentTranslate = 0;
-let prevTranslate = 0;
-let isDragging = false;
-
-if (track) {
-  track.addEventListener('touchstart', touchStart);
-  track.addEventListener('touchmove', touchMove);
-  track.addEventListener('touchend', touchEnd);
-  track.addEventListener('mousedown', touchStart);
-  track.addEventListener('mousemove', touchMove);
-  track.addEventListener('mouseup', touchEnd);
-  track.addEventListener('mouseleave', touchEnd);
-}
-
-function touchStart(e) {
-  isDragging = true;
-  startX = getPositionX(e);
-  track.style.transition = 'none';
-}
-
-function touchMove(e) {
-  if (!isDragging) return;
-  const currentPosition = getPositionX(e);
-  currentTranslate = prevTranslate + currentPosition - startX;
-  track.style.transform = `translateX(${currentTranslate}px)`;
-}
-
-function touchEnd() {
-  if (!isDragging) return;
-  isDragging = false;
-  const movedBy = currentTranslate - prevTranslate;
-
-  if (movedBy < -50 && currentIndex < dots.length - 1) {
-    currentIndex += 1;
-  } else if (movedBy > 50 && currentIndex > 0) {
-    currentIndex -= 1;
-  }
-  setPositionByIndex();
-}
-
-function getPositionX(e) {
-  return e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-}
 
 function setPositionByIndex() {
-  currentTranslate = currentIndex * -track.offsetWidth;
-  prevTranslate = currentTranslate;
-  track.style.transition = 'transform 0.3s ease-out';
-  track.style.transform = `translateX(${currentTranslate}px)`;
+  if (!track) return;
+  const slideWidth = track.offsetWidth / dots.length;
+  track.style.transform = `translateX(-${currentIndex * 50}%)`;
   
   dots.forEach((dot, idx) => {
     dot.classList.toggle('active', idx === currentIndex);
@@ -198,7 +126,7 @@ function goToSlide(index) {
 }
 
 setInterval(() => {
-  if (!isDragging && track) {
+  if (dots.length > 0) {
     currentIndex = (currentIndex + 1) % dots.length;
     setPositionByIndex();
   }
@@ -254,15 +182,11 @@ function switchCategory(cat, element) {
   activeCategoryFilter = cat;
   
   document.querySelectorAll('.sidebar-nav .nav-category-item').forEach(el => el.classList.remove('active'));
-  if (element) {
-    element.classList.add('active');
-  }
+  if (element) element.classList.add('active');
 
   const bottomItems = document.querySelectorAll('.mobile-bottom-nav .bottom-nav-item');
   bottomItems.forEach(el => el.classList.remove('active'));
-  if (cat === 'all' && bottomItems[0]) {
-    bottomItems[0].classList.add('active');
-  }
+  if (cat === 'all' && bottomItems[0]) bottomItems[0].classList.add('active');
 
   renderGames();
 }
@@ -316,8 +240,8 @@ function switchAuthTab(tab) {
 
 function handleRegister(e) {
   e.preventDefault();
-  const u = document.getElementById('regUser').value;
-  const p = document.getElementById('regPass').value;
+  const u = document.getElementById('regUser').value.trim();
+  const p = document.getElementById('regPass').value.trim();
   let db = JSON.parse(localStorage.getItem('users_db')) || {};
 
   if (db[u]) {
@@ -333,8 +257,8 @@ function handleRegister(e) {
 
 function handleLogin(e) {
   e.preventDefault();
-  const u = document.getElementById('loginUser').value;
-  const p = document.getElementById('loginPass').value;
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
   let db = JSON.parse(localStorage.getItem('users_db')) || {};
 
   if (db[u] && db[u].password === p) {
@@ -449,21 +373,15 @@ function sendChatMessage() {
 
 function getSmartResponse(input) {
   if (input.includes('depo') || input.includes('isi') || input.includes('topup') || input.includes('bayar')) {
-    return "Untuk melakukan Deposit, silakan klik tombol [⚡ DEPOSIT] di bagian navigasi bawah atau atas. Minimal deposit hanya Rp 10.000 via QRIS, Bank, atau E-Wallet.";
+    return "Untuk melakukan Deposit, silakan klik tombol [TOP UP] di bagian bawah atau navigasi utama. Minimal deposit Rp 10.000 via QRIS, Bank, atau E-Wallet.";
   }
   if (input.includes('wd') || input.includes('withdraw') || input.includes('tarik')) {
-    return "Penarikan dana (Withdraw) dapat diproses melalui menu Akun Profil. Minimal penarikan saldo adalah Rp 50.000 dengan estimasi proses 1-3 menit.";
+    return "Penarikan dana (Withdraw) dapat diproses melalui menu WD atau Akun Profil. Minimal penarikan saldo adalah Rp 50.000.";
   }
-  if (input.includes('promo') || input.includes('bonus') || input.includes('event')) {
-    return "Bonus New Member 100% & Cashback Harian 0.8% tersedia di menu [Promosi]. Anda bisa mengklaimnya secara gratis!";
+  if (input.includes('promo') || input.includes('bonus')) {
+    return "Bonus New Member 100% & Cashback Harian tersedia di menu [Promosi].";
   }
-  if (input.includes('gacor') || input.includes('rtp') || input.includes('menang')) {
-    return "Game Majok Ways 2 (Pragmatic) saat ini memiliki pola RTP tertinggi mencapai 98.8%. Silakan dicoba Bossku!";
-  }
-  if (input.includes('halo') || input.includes('p') || input.includes('min')) {
-    return "Halo! Ada yang bisa Customer Service VIP bantu mengenai kendala akun Anda?";
-  }
-  return "Terima kasih atas pertanyaannya. Tim CS VIP kami telah mencatat pesan Anda. Mohon pastikan akun Anda sudah terverifikasi untuk kemudahan transaksi.";
+  return "Terima kasih atas pertanyaannya. Tim CS VIP telah mencatat pesan Anda.";
 }
 
 /* ---------------- FULLSCREEN GAME ENGINE ---------------- */
@@ -475,7 +393,7 @@ function openGame(url) {
   window.open(url, '_blank');
 }
 
-/* ---------------- NEW TOP UP SYSTEM FLOW ---------------- */
+/* ---------------- TOP UP SYSTEM FLOW ---------------- */
 let currentTopUpData = {
   amount: 0,
   adminFee: 0,
@@ -508,14 +426,14 @@ function closeTopUpModal() {
 }
 
 function selectQuickAmount(amount, element) {
-  document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
-  element.classList.add('active');
+  document.querySelectorAll('#stepInput .quick-btn').forEach(btn => btn.classList.remove('active'));
+  if (element) element.classList.add('active');
   document.getElementById('manualAmount').value = amount;
 }
 
 function selectPaymentMethod(element, methodName) {
   document.querySelectorAll('.method-item').forEach(item => item.classList.remove('selected'));
-  element.classList.add('selected');
+  if (element) element.classList.add('selected');
   currentTopUpData.method = methodName;
 }
 
@@ -586,11 +504,6 @@ function copyPayCode() {
   const code = document.getElementById('payCodeVal').innerText;
   navigator.clipboard.writeText(code);
   showToast("Kode pembayaran berhasil disalin!", "success");
-}
-
-function toggleAccordion(element) {
-  const body = element.nextElementSibling;
-  body.style.display = body.style.display === 'block' ? 'none' : 'block';
 }
 
 function simulateWebhookSuccess() {
