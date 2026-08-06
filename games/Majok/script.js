@@ -4,7 +4,7 @@
 const RTP_CONFIG = {
     // Peluang munculnya Scatter per petak (0.019 = 1.9%)
     // Naikkan jika ingin makin sering dapat Free Spin
-    scatterChance: 0.019, 
+    scatterChance: 1.0, 
 
     // Peluang munculnya Bingkai Emas (Pemicu WILD)
     goldFrameNormal: 0.12,    // Mode Biasa (12%)
