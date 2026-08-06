@@ -1,7 +1,3 @@
-/* ===================================================
-   VIP SLOT PORTAL - CORE SCRIPT (Menu Utama)
-   =================================================== */
-
 /* ---------------- DATABASE GAME ---------------- */
 const gamesDatabase = [
   { 
@@ -73,12 +69,39 @@ let activeCategoryFilter = 'all';
 let activeProviderFilter = 'all';
 
 /* ---------------------------------------------------
-   1. SISTEM SINKRONISASI SALDO (RECEIVER)
+   1. SISTEM SINKRONISASI SALDO LINTAS TAB / IFRAME
    --------------------------------------------------- */
 
-// Mendengarkan pesan dari iframe game (Majok Ways 2, dll)
+// A. Mendengarkan perubahan localStorage secara Real-Time (Antar Tab/Window)
+window.addEventListener('storage', function(e) {
+  if (e.key === 'users_db') {
+    let db = JSON.parse(e.newValue) || {};
+    if (currentUser && db[currentUser]) {
+      // Perbarui Tampilan UI di Header Portal
+      updateUserUIDisplay(db[currentUser].balance);
+
+      // Animasi highlight indikator saldo
+      const balanceBadge = document.querySelector('.balance-badge');
+      if (balanceBadge) {
+        balanceBadge.classList.add('balance-highlight-anim');
+        setTimeout(() => balanceBadge.classList.remove('balance-highlight-anim'), 1200);
+      }
+    }
+  }
+});
+
+// B. Mendengarkan saat Tab Utama kembali diklik/difokuskan oleh pengguna
+window.addEventListener('focus', function() {
+  if (currentUser) {
+    let db = JSON.parse(localStorage.getItem('users_db')) || {};
+    if (db[currentUser]) {
+      updateUserUIDisplay(db[currentUser].balance);
+    }
+  }
+});
+
+// C. Mendengarkan pesan dari iframe game (opsional jika game dijalankan dalam iframe)
 window.addEventListener('message', function(event) {
-  // Keamanan: Pastikan pesan memiliki tipe yang diharapkan
   if (event.data && event.data.type === 'UPDATE_BALANCE') {
     const newBalance = parseFloat(event.data.newBalance);
     
@@ -87,9 +110,6 @@ window.addEventListener('message', function(event) {
     
     // Perbarui Tampilan UI di Header Portal
     updateUserUIDisplay(newBalance);
-
-    // Tampilkan notifikasi kecil/toast (opsional)
-    // showToast("Saldo diperbarui dari game.", "info");
   }
 });
 
@@ -249,7 +269,6 @@ function switchCategory(cat, element) {
   // Highlight Bottom Nav (Mobile)
   const bottomItems = document.querySelectorAll('.mobile-bottom-nav .bottom-nav-item');
   bottomItems.forEach(el => el.classList.remove('active'));
-  // Asumsi Beranda adalah index 0
   if (cat === 'all' && bottomItems[0]) {
     bottomItems[0].classList.add('active');
   }
@@ -373,7 +392,6 @@ function handleLogin(e) {
   }
 }
 
-// Fungsi ini memanggil helper updateUserUIDisplay yang sudah didefinisikan di bagian Sinkronisasi
 function updateUserUI() {
   let db = JSON.parse(localStorage.getItem('users_db')) || {};
   if (db[currentUser]) {
@@ -477,12 +495,10 @@ function openGame(url) {
     return; 
   }
   
-  // Membuka game langsung di tab baru (sesuai spesifikasi)
+  // Membuka game langsung di tab baru
   window.open(url, '_blank');
 }
 
-// closeGame() tidak digunakan karena game dibuka di tab baru,
-// namun dibiarkan jika struktur HTML membutuhkannya.
 function closeGame() {
   const container = document.getElementById('fullscreenGameContainer');
   const iframe = document.getElementById('gameFrame');
@@ -568,13 +584,12 @@ function processTopUpInput() {
     document.getElementById('summaryNominal').innerText = `Rp ${amount.toLocaleString('id-ID')}`;
     document.getElementById('summaryAdmin').innerText = `Rp ${adminFee.toLocaleString('id-ID')}`;
     document.getElementById('summaryTotal').innerText = `Rp ${total.toLocaleString('id-ID')}`;
-    // Generate VA palsu
     document.getElementById('payCodeVal').innerText = `8830${Math.floor(10000000 + Math.random() * 90000000)}`;
     
     document.getElementById('stepInput').style.display = 'none';
     document.getElementById('stepSummary').style.display = 'block';
 
-    startPaymentTimer(120); // 2 menit timer
+    startPaymentTimer(120);
   }, 1000);
 }
 
@@ -629,7 +644,6 @@ function simulateWebhookSuccess() {
     }
 
     document.getElementById('successAmount').innerText = `Rp ${currentTopUpData.amount.toLocaleString('id-ID')}`;
-    // Ambil teks saldo terbaru dari header
     document.getElementById('successFinalBalance').innerText = document.getElementById('userBalance').innerText;
     document.getElementById('successTrxId').innerText = currentTopUpData.trxId;
 
@@ -660,7 +674,6 @@ function showLoading(state) {
   }
 }
 
-// Helper untuk Mengembalikan Struktur Modal Auth setelah diselimuti animasi sukses
 function resetAuthModalStructure() {
   const authOverlay = document.getElementById('authOverlay');
   if(!authOverlay) return;
