@@ -1,3 +1,7 @@
+/* ===================================================
+   VIP SLOT PORTAL - CORE SCRIPT (Menu Utama)
+   =================================================== */
+
 /* ---------------- DATABASE GAME ---------------- */
 const gamesDatabase = [
   { 
@@ -8,7 +12,7 @@ const gamesDatabase = [
     tag: 'HOT', 
     tagClass: 'tag-hot', 
     rtp: '98.8%', 
-    path: 'games/Majok/index.html' 
+    path: 'games/Majok/index.html' // Pastikan path ini benar
   },
   { 
     title: 'Spaceman', 
@@ -62,10 +66,50 @@ const gamesDatabase = [
   }
 ];
 
+// Global States
 let currentUser = null;
 let jackpotValue = 1482930500;
 let activeCategoryFilter = 'all';
 let activeProviderFilter = 'all';
+
+/* ---------------------------------------------------
+   1. SISTEM SINKRONISASI SALDO (RECEIVER)
+   --------------------------------------------------- */
+
+// Mendengarkan pesan dari iframe game (Majok Ways 2, dll)
+window.addEventListener('message', function(event) {
+  // Keamanan: Pastikan pesan memiliki tipe yang diharapkan
+  if (event.data && event.data.type === 'UPDATE_BALANCE') {
+    const newBalance = parseFloat(event.data.newBalance);
+    
+    // Perbarui saldo di database lokal (localStorage)
+    updateLocalDatabaseBalance(newBalance);
+    
+    // Perbarui Tampilan UI di Header Portal
+    updateUserUIDisplay(newBalance);
+
+    // Tampilkan notifikasi kecil/toast (opsional)
+    // showToast("Saldo diperbarui dari game.", "info");
+  }
+});
+
+// Helper untuk memperbarui balance di localStorage users_db
+function updateLocalDatabaseBalance(balance) {
+  if (!currentUser) return;
+  let db = JSON.parse(localStorage.getItem('users_db')) || {};
+  if (db[currentUser]) {
+    db[currentUser].balance = balance;
+    localStorage.setItem('users_db', JSON.stringify(db));
+  }
+}
+
+// Helper untuk memperbarui tampilan Angka Saldo di UI Header Portal
+function updateUserUIDisplay(balance) {
+  const balanceEl = document.getElementById('userBalance');
+  if (balanceEl) {
+    balanceEl.innerText = `Rp ${balance.toLocaleString('id-ID')}`;
+  }
+}
 
 /* ---------------- NOTIFICATION SYSTEM ---------------- */
 function showNotify(title, message, icon = '✨') {
@@ -144,6 +188,7 @@ function goToSlide(index) {
   setPositionByIndex();
 }
 
+// Auto slide banner
 setInterval(() => {
   if (!isDragging && track) {
     currentIndex = (currentIndex + 1) % dots.length;
@@ -204,6 +249,7 @@ function switchCategory(cat, element) {
   // Highlight Bottom Nav (Mobile)
   const bottomItems = document.querySelectorAll('.mobile-bottom-nav .bottom-nav-item');
   bottomItems.forEach(el => el.classList.remove('active'));
+  // Asumsi Beranda adalah index 0
   if (cat === 'all' && bottomItems[0]) {
     bottomItems[0].classList.add('active');
   }
@@ -232,10 +278,15 @@ setInterval(() => {
 /* ---------------- AUTH & USER STATE ---------------- */
 window.onload = function() {
   renderGames();
+  // Cek sesi login saat halaman dimuat
   const activeSession = localStorage.getItem('active_session');
   if (activeSession) {
     currentUser = activeSession;
-    updateUserUI();
+    // Ambil data balance terbaru
+    let db = JSON.parse(localStorage.getItem('users_db')) || {};
+    if (db[currentUser]) {
+        updateUserUIDisplay(db[currentUser].balance);
+    }
     const authOverlay = document.getElementById('authOverlay');
     if (authOverlay) authOverlay.style.display = 'none';
   }
@@ -266,6 +317,7 @@ function handleRegister(e) {
     return;
   }
 
+  // Set saldo awal registrasi di sini (misal: 50.000)
   db[u] = { password: p, balance: 50000 };
   localStorage.setItem('users_db', JSON.stringify(db));
   showNotify('Sukses', 'Pendaftaran Berhasil! Silakan Login.', '✅');
@@ -282,49 +334,38 @@ function handleLogin(e) {
     currentUser = u;
     localStorage.setItem('active_session', u);
     
-    // 1. Dapatkan kontainer modal auth
+    // Tampilkan animasi sukses login
     const authOverlay = document.getElementById('authOverlay');
     const modalCard = authOverlay.querySelector('.modal-card');
-
-    // 2. Tampilkan Tampilan Pop-Up Animasi Sukses Login
     modalCard.className = 'success-login-card';
     modalCard.innerHTML = `
       <div class="success-checkmark-circle">
         <i class="fa-solid fa-check"></i>
       </div>
-      <h3 style="color: var(--gold-light); font-family: 'Teko', sans-serif; font-size: 1.8rem; line-height: 1; margin-bottom: 4px;">LOGIN BERHASIL!</h3>
+      <h3 style="color: var(--gold-light); font-family: Teko, sans-serif; font-size: 1.8rem; line-height: 1; margin-bottom: 4px;">LOGIN BERHASIL!</h3>
       <p style="color: var(--text-secondary); font-size: 0.82rem;">Selamat datang kembali, <strong style="color:#fff;">${u}</strong></p>
     `;
 
-    // 3. Setelah jeda singkat animasi modal, tutup overlay & jalankan animasi highlight di UI Utama
     setTimeout(() => {
-      // Fade out modal
       authOverlay.style.transition = 'opacity 0.3s ease';
       authOverlay.style.opacity = '0';
 
       setTimeout(() => {
         authOverlay.style.display = 'none';
-        authOverlay.style.opacity = '1'; // Reset opacity
-        
-        // Kembalikan struktur awal modal auth agar siap jika dipakai lagi
-        resetAuthModalStructure();
+        authOverlay.style.opacity = '1'; 
+        resetAuthModalStructure(); // Kembalikan form untuk penggunaan nanti
 
-        // Update data pengguna di UI
-        updateUserUI();
+        // Update UI Portal dengan saldo dari DB
+        updateUserUIDisplay(db[u].balance);
 
-        // Trigger animasi highlight glowing pada balance badge header
+        // Animasi glow pada balance badge
         const balanceBadge = document.querySelector('.balance-badge');
         if (balanceBadge) {
           balanceBadge.classList.add('balance-highlight-anim');
-          setTimeout(() => {
-            balanceBadge.classList.remove('balance-highlight-anim');
-          }, 1200);
+          setTimeout(() => balanceBadge.classList.remove('balance-highlight-anim'), 1200);
         }
-
-        // Tampilkan Toast Selamat Datang
         showToast(`Selamat datang kembali, ${u}!`, 'success');
       }, 300);
-
     }, 1200);
 
   } else {
@@ -332,47 +373,11 @@ function handleLogin(e) {
   }
 }
 
-// Helper untuk Mengembalikan Struktur Modal Auth setelah diselimuti animasi sukses
-function resetAuthModalStructure() {
-  const authOverlay = document.getElementById('authOverlay');
-  authOverlay.innerHTML = `
-    <div class="modal-card">
-      <div class="tab-switcher">
-        <div class="tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">LOGIN</div>
-        <div class="tab-btn" id="tabRegister" onclick="switchAuthTab('register')">DAFTAR</div>
-      </div>
-
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="field-group">
-          <label>Username</label>
-          <input type="text" id="loginUser" class="input-control" placeholder="Masukkan username" required>
-        </div>
-        <div class="field-group">
-          <label>Password</label>
-          <input type="password" id="loginPass" class="input-control" placeholder="Masukkan password" required>
-        </div>
-        <button type="submit" class="btn-submit">MASUK</button>
-      </form>
-
-      <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
-        <div class="field-group">
-          <label>Username Baru</label>
-          <input type="text" id="regUser" class="input-control" placeholder="Buat username" required>
-        </div>
-        <div class="field-group">
-          <label>Password Baru</label>
-          <input type="password" id="regPass" class="input-control" placeholder="Buat password" required>
-        </div>
-        <button type="submit" class="btn-submit">BUAT AKUN VIP</button>
-      </form>
-    </div>
-  `;
-}
-
+// Fungsi ini memanggil helper updateUserUIDisplay yang sudah didefinisikan di bagian Sinkronisasi
 function updateUserUI() {
   let db = JSON.parse(localStorage.getItem('users_db')) || {};
   if (db[currentUser]) {
-    document.getElementById('userBalance').innerText = `Rp ${db[currentUser].balance.toLocaleString('id-ID')}`;
+    updateUserUIDisplay(db[currentUser].balance);
   }
 }
 
@@ -457,7 +462,7 @@ function getSmartResponse(input) {
     return "Bonus New Member 100% & Cashback Harian 0.8% tersedia di menu [Promosi]. Anda bisa mengklaimnya secara gratis!";
   }
   if (input.includes('gacor') || input.includes('rtp') || input.includes('menang')) {
-    return "Game Pragmatic Play (Majok Spell) & PG Soft (Megawil Rush) saat ini memiliki pola RTP tertinggi mencapai 98.8%. Silakan dicoba Bossku!";
+    return "Game Majok Ways 2 (Pragmatic) saat ini memiliki pola RTP tertinggi mencapai 98.8%. Silakan dicoba Bossku!";
   }
   if (input.includes('halo') || input.includes('p') || input.includes('min')) {
     return "Halo! Ada yang bisa Customer Service VIP bantu mengenai kendala akun Anda?";
@@ -472,26 +477,12 @@ function openGame(url) {
     return; 
   }
   
-  // Membuka game langsung di tab baru tanpa mode fullscreen browser
+  // Membuka game langsung di tab baru (sesuai spesifikasi)
   window.open(url, '_blank');
 }
 
-function closeGame() {
-  function openGame(url) {
-  if (!currentUser) { 
-    openAuthModal(); 
-    return; 
-  }
-  
-  const container = document.getElementById('fullscreenGameContainer');
-  const iframe = document.getElementById('gameFrame');
-  
-  if (container && iframe) {
-    iframe.src = url;
-    container.style.display = 'block';
-  }
-}
-
+// closeGame() tidak digunakan karena game dibuka di tab baru,
+// namun dibiarkan jika struktur HTML membutuhkannya.
 function closeGame() {
   const container = document.getElementById('fullscreenGameContainer');
   const iframe = document.getElementById('gameFrame');
@@ -500,7 +491,6 @@ function closeGame() {
     iframe.src = '';
     container.style.display = 'none';
   }
-}
 }
 
 /* ---------------- NEW TOP UP SYSTEM FLOW ---------------- */
@@ -578,12 +568,13 @@ function processTopUpInput() {
     document.getElementById('summaryNominal').innerText = `Rp ${amount.toLocaleString('id-ID')}`;
     document.getElementById('summaryAdmin').innerText = `Rp ${adminFee.toLocaleString('id-ID')}`;
     document.getElementById('summaryTotal').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+    // Generate VA palsu
     document.getElementById('payCodeVal').innerText = `8830${Math.floor(10000000 + Math.random() * 90000000)}`;
     
     document.getElementById('stepInput').style.display = 'none';
     document.getElementById('stepSummary').style.display = 'block';
 
-    startPaymentTimer(120);
+    startPaymentTimer(120); // 2 menit timer
   }, 1000);
 }
 
@@ -630,12 +621,15 @@ function simulateWebhookSuccess() {
 
     let db = JSON.parse(localStorage.getItem('users_db')) || {};
     if (db[currentUser]) {
+      // Tambah saldo
       db[currentUser].balance += currentTopUpData.amount;
       localStorage.setItem('users_db', JSON.stringify(db));
-      updateUserUI();
+      // Update UI Portal
+      updateUserUIDisplay(db[currentUser].balance);
     }
 
     document.getElementById('successAmount').innerText = `Rp ${currentTopUpData.amount.toLocaleString('id-ID')}`;
+    // Ambil teks saldo terbaru dari header
     document.getElementById('successFinalBalance').innerText = document.getElementById('userBalance').innerText;
     document.getElementById('successTrxId').innerText = currentTopUpData.trxId;
 
@@ -646,7 +640,7 @@ function simulateWebhookSuccess() {
   }, 1200);
 }
 
-/* ---------------- TOAST & LOADING SYSTEM ---------------- */
+/* ---------------- TOAST, LOADING & HELPER SYSTEM ---------------- */
 function showToast(message, type = 'info') {
   const toast = document.getElementById('toastNotification');
   if (!toast) return;
@@ -664,4 +658,42 @@ function showLoading(state) {
   if (loading) {
     loading.style.display = state ? 'flex' : 'none';
   }
+}
+
+// Helper untuk Mengembalikan Struktur Modal Auth setelah diselimuti animasi sukses
+function resetAuthModalStructure() {
+  const authOverlay = document.getElementById('authOverlay');
+  if(!authOverlay) return;
+  authOverlay.innerHTML = `
+    <div class="modal-card">
+      <div class="tab-switcher">
+        <div class="tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">LOGIN</div>
+        <div class="tab-btn" id="tabRegister" onclick="switchAuthTab('register')">DAFTAR</div>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="field-group">
+          <label>Username</label>
+          <input type="text" id="loginUser" class="input-control" placeholder="Masukkan username" required>
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <input type="password" id="loginPass" class="input-control" placeholder="Masukkan password" required>
+        </div>
+        <button type="submit" class="btn-submit">MASUK</button>
+      </form>
+
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+        <div class="field-group">
+          <label>Username Baru</label>
+          <input type="text" id="regUser" class="input-control" placeholder="Buat username" required>
+        </div>
+        <div class="field-group">
+          <label>Password Baru</label>
+          <input type="password" id="regPass" class="input-control" placeholder="Buat password" required>
+        </div>
+        <button type="submit" class="btn-submit">BUAT AKUN VIP</button>
+      </form>
+    </div>
+  `;
 }

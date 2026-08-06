@@ -9,37 +9,71 @@ let currentMultiplierIndex = 0;
 
 let bgmAudio = null;
 
-// SINKRONISASI SALDO DENGAN PORTAL UTAMA
-const currentUser = localStorage.getItem('session_user');
+// ===================================================
+// SINKRONISASI SALDO DENGAN PORTAL UTAMA (UPDATED)
+// ===================================================
 
+// Detect username dari berbagai opsi key localStorage
+const currentUser = localStorage.getItem('session_user') || 
+                    localStorage.getItem('currentUser') || 
+                    localStorage.getItem('username') ||
+                    localStorage.getItem('active_session');
+
+// Fungsi membaca saldo saat ini dari Portal / Database LocalStorage
 function loadBalanceFromPortal() {
-    if (!currentUser) return 100000.00;
     const usersDb = JSON.parse(localStorage.getItem('users_db')) || {};
-    return usersDb[currentUser] ? usersDb[currentUser].balance : 100000.00;
+    
+    // Cek di database users_db
+    if (currentUser && usersDb[currentUser] !== undefined) {
+        return parseFloat(usersDb[currentUser].balance);
+    }
+    
+    // Cek key saldo langsung
+    const directBalance = localStorage.getItem('user_balance');
+    if (directBalance !== null) {
+        return parseFloat(directBalance);
+    }
+
+    // Default jika belum ada data saldo
+    return 100000.00;
 }
 
 let balance = loadBalanceFromPortal();   
 let currentWin = 0.00;     
 let totalFreeSpinWin = 0.00; 
 
+// Fungsi update saldo kembali ke Portal / Menu Utama
 function syncBalanceToPortal(newBalance) {
-    if (!currentUser) return;
-
+    // 1. Update ke local storage database
     let usersDb = JSON.parse(localStorage.getItem('users_db')) || {};
-    if (usersDb[currentUser]) {
+    if (currentUser && usersDb[currentUser]) {
         usersDb[currentUser].balance = newBalance;
         localStorage.setItem('users_db', JSON.stringify(usersDb));
     }
+    localStorage.setItem('user_balance', newBalance);
 
-    if (window.parent) {
+    // 2. Kirim pesan sinkronisasi ke Window Parent (Portal Luar)
+    if (window.parent && window.parent !== window) {
         window.parent.postMessage({
             type: 'UPDATE_BALANCE',
-            newBalance: newBalance
+            newBalance: newBalance,
+            username: currentUser
         }, '*');
     }
 }
 
-// MEKANIK TARUHAN
+// Dengarkan sinyal balasan jika Portal Utama mengirimkan saldo terbaru ke Iframe Game
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'SET_GAME_BALANCE') {
+        balance = parseFloat(event.data.newBalance);
+        updateUI();
+    }
+});
+
+// ===================================================
+// MEKANIK TARUHAN & GAMEPLAY CORE
+// ===================================================
+
 const BASE_BET = 20;
 let selectedSize = 0.30;  
 let selectedLevel = 2;    
@@ -940,6 +974,7 @@ function applyCascade(winningCoords, payoutThisStep) {
     currentWin += finalStepPayout;
     balance += finalStepPayout;
     
+    // Sinkronisasi saldo setiap ada penambahan kemenangan
     syncBalanceToPortal(balance);
 
     if (isFreeSpinMode) totalFreeSpinWin += finalStepPayout;
@@ -1131,6 +1166,7 @@ function executeFreeSpinLoop() {
 }
 
 function handleSpin() {
+    // Selalu ambil nilai saldo terupdate sebelum memulai spin
     balance = loadBalanceFromPortal();
 
     if (balance < currentBet) {
@@ -1142,6 +1178,7 @@ function handleSpin() {
     scatterTrackerInCurrentSpin = 0; 
     currentMultiplierIndex = 0;
     
+    // Potong saldo & kirim pembaruan ke portal luar
     balance -= currentBet;
     currentWin = 0.00;
 
