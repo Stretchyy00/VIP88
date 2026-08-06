@@ -22,7 +22,7 @@
   <!-- STATE LOADING OVERLAY -->
   <div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
-    <p>Memproses transaksi...</p>
+    <p id="loadingText">Memproses transaksi...</p>
   </div>
 
   <!-- TOP HEADER -->
@@ -216,67 +216,167 @@
     </div>
   </div>
 
-  <!-- PROFILE & WITHDRAW MODAL -->
+  <!-- PROFILE MODAL -->
   <div class="overlay-container" id="profileModal">
     <div class="modal-card">
       <div class="modal-head">
-        <h4>PROFIL & WITHDRAW</h4>
+        <h4>PROFIL ANGGOTA VIP</h4>
         <span style="cursor:pointer;" onclick="closeProfileModal()"><i class="fa-solid fa-xmark"></i></span>
       </div>
 
-      <!-- TAB PROFIL & WD -->
-      <div class="tab-switcher">
-        <div class="tab-btn active" id="tabProfileInfo" onclick="switchProfileTab('info')">INFORMASI AKUN</div>
-        <div class="tab-btn" id="tabProfileWD" onclick="switchProfileTab('withdraw')">WITHDRAW DANA</div>
-      </div>
-
-      <!-- PANEL 1: INFORMASI AKUN -->
+      <!-- INFORMASI AKUN & ACTION BUTTONS -->
       <div id="panelProfileInfo">
         <div class="field-group">
-          <label>Username</label>
+          <label>Username VIP</label>
           <input type="text" id="profUser" class="input-control" readonly>
         </div>
         <div class="field-group">
-          <label>Status Akun</label>
-          <input type="text" value="VIP PLATINUM MEMBER" class="input-control" style="color:var(--gold-light); font-weight:bold;" readonly>
+          <label>Status Keanggotaan</label>
+          <input type="text" value="VIP PLATINUM MEMBER" class="input-control status-platinum" readonly>
         </div>
         <div class="field-group">
-          <label>Total Saldo Virtual</label>
-          <input type="text" id="profBalance" class="input-control" readonly>
+          <label>Total Saldo Dompet</label>
+          <input type="text" id="profBalance" class="input-control balance-input" readonly>
         </div>
-        <button class="btn-submit" onclick="openTopUpModal(); closeProfileModal();">DEPOSIT SALDO</button>
-        <button class="btn-submit" style="background:#dc2626; color:#fff; margin-top:8px;" onclick="handleLogout()">LOGOUT</button>
+
+        <!-- BUTTON SEBELAH-SEBELAHAN (DEPOSIT & WITHDRAW) -->
+        <div class="action-btn-row">
+          <button class="btn-action-side btn-depo-side" onclick="closeProfileModal(); openTopUpModal();">
+            <i class="fa-solid fa-wallet"></i> DEPOSIT
+          </button>
+          <button class="btn-action-side btn-wd-side" onclick="closeProfileModal(); openWithdrawModal();">
+            <i class="fa-solid fa-hand-holding-dollar"></i> WITHDRAW
+          </button>
+        </div>
+
+        <button class="btn-submit btn-logout-danger" onclick="handleLogout()">LOGOUT AKUN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL WITHDRAW BERTAHAP (PROFESIONAL STEP-BY-STEP) -->
+  <div class="overlay-container" id="withdrawModal">
+    <div class="modal-card modal-withdraw">
+      <div class="modal-head">
+        <h4><i class="fa-solid fa-money-bill-transfer"></i> WITHDRAW DANA VIP</h4>
+        <span style="cursor:pointer;" onclick="closeWithdrawModal()"><i class="fa-solid fa-xmark"></i></span>
       </div>
 
-      <!-- PANEL 2: FORM WITHDRAW -->
-      <div id="panelProfileWD" style="display: none;">
+      <!-- STEP INDICATOR -->
+      <div class="step-wizard-bar">
+        <div class="wizard-step active" id="wdStepDot1">
+          <div class="step-num">1</div>
+          <span>Metode & Nominal</span>
+        </div>
+        <div class="wizard-line" id="wdStepLine1"></div>
+        <div class="wizard-step" id="wdStepDot2">
+          <div class="step-num">2</div>
+          <span>Verifikasi Rekening</span>
+        </div>
+        <div class="wizard-line" id="wdStepLine2"></div>
+        <div class="wizard-step" id="wdStepDot3">
+          <div class="step-num">3</div>
+          <span>Status Penarikan</span>
+        </div>
+      </div>
+
+      <!-- TAMPILAN SALDO SAAT INI -->
+      <div class="balance-display-box">
+        <span>Saldo Tersedia:</span>
+        <strong id="wdCurrentBalance">Rp 0</strong>
+      </div>
+
+      <!-- STEP 1: PILIH BANK/E-WALLET & NOMINAL -->
+      <div id="wdStep1">
         <div class="field-group">
-          <label>Pilih Bank / E-Wallet Tujuan</label>
+          <label>Pilih Bank / E-Wallet Penampung</label>
           <select id="wdMethod" class="input-control">
-            <option value="">-- Pilih Metode Penarikan --</option>
-            <option value="BCA">Bank BCA</option>
-            <option value="Mandiri">Bank Mandiri</option>
-            <option value="BRI">Bank BRI</option>
-            <option value="BNI">Bank BNI</option>
-            <option value="DANA">E-Wallet DANA</option>
-            <option value="OVO">E-Wallet OVO</option>
-            <option value="Gopay">E-Wallet GoPay</option>
+            <option value="">-- Pilih Bank / E-Wallet --</option>
+            <optgroup label="Bank Transfer Instant">
+              <option value="Bank BCA">Bank BCA (Transfer Auto)</option>
+              <option value="Bank Mandiri">Bank Mandiri (Transfer Auto)</option>
+              <option value="Bank BRI">Bank BRI (Transfer Auto)</option>
+              <option value="Bank BNI">Bank BNI (Transfer Auto)</option>
+              <option value="Bank CIMB Niaga">Bank CIMB Niaga</option>
+            </optgroup>
+            <optgroup label="E-Wallet & Digital Money">
+              <option value="DANA">DANA (Auto Speed)</option>
+              <option value="OVO">OVO (Auto Speed)</option>
+              <option value="GoPay">GoPay (Auto Speed)</option>
+              <option value="ShopeePay">ShopeePay</option>
+            </optgroup>
           </select>
         </div>
+
+        <label class="section-label">Pilihan Cepat Nominal Withdraw</label>
+        <div class="quick-amount-grid">
+          <button type="button" class="quick-btn" onclick="selectQuickWdAmount(50000, this)">Rp 50.000</button>
+          <button type="button" class="quick-btn" onclick="selectQuickWdAmount(100000, this)">Rp 100.000</button>
+          <button type="button" class="quick-btn" onclick="selectQuickWdAmount(500000, this)">Rp 500.000</button>
+          <button type="button" class="quick-btn" onclick="selectQuickWdAmount('all', this)">Tarik Semua</button>
+        </div>
+
         <div class="field-group">
-          <label>Nomor Rekening / HP E-Wallet</label>
+          <label>Nominal Penarikan (Min. Rp 50.000)</label>
+          <input type="number" id="wdAmount" class="input-control" placeholder="Contoh: 100000" min="50000">
+        </div>
+
+        <button class="btn-submit btn-wd-gradient" onclick="goToWdStep2()">Lanjut Ke Tahap 2 <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+
+      <!-- STEP 2: VERIFIKASI REKENING & SECURITY PIN/PASSWORD -->
+      <div id="wdStep2" style="display: none;">
+        <div class="summary-card">
+          <div class="summary-row"><span>Metode Tujuan:</span><strong id="summaryWdMethod">-</strong></div>
+          <div class="summary-row"><span>Jumlah Penarikan:</span><strong id="summaryWdAmount" style="color:#22c55e;">Rp 0</strong></div>
+          <div class="summary-row"><span>Biaya Layanan VIP:</span><strong style="color:#22c55e;">GRATIS (Rp 0)</strong></div>
+        </div>
+
+        <div class="field-group">
+          <label>Nomor Rekening / No. HP E-Wallet</label>
           <input type="number" id="wdAccountNum" class="input-control" placeholder="Contoh: 1234567890">
         </div>
+
         <div class="field-group">
-          <label>Nama Pemilik Rekening / Akun</label>
-          <input type="text" id="profAccountHolder" class="input-control" placeholder="Nama sesuai buku tabungan/aplikasi">
+          <label>Nama Lengkap Pemilik Rekening</label>
+          <input type="text" id="wdAccountHolder" class="input-control" placeholder="Sesuai nama di buku tabungan / aplikasi">
         </div>
+
         <div class="field-group">
-          <label>Nominal Withdraw (Min. Rp 50.000)</label>
-          <input type="number" id="wdAmount" class="input-control" placeholder="Masukkan jumlah (Contoh: 100000)" min="50000">
+          <label>Password Akun VIP (Konfirmasi Keamanan)</label>
+          <input type="password" id="wdPassConfirm" class="input-control" placeholder="Masukkan password akun Anda">
         </div>
-        <button class="btn-submit" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); color:#fff;" onclick="processWithdraw()">AJUKAN WITHDRAW</button>
+
+        <div class="btn-wizard-group">
+          <button class="btn-back" onclick="backToWdStep1()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+          <button class="btn-submit btn-wd-gradient" style="flex:2;" onclick="processFinalWithdraw()">Konfirmasi Withdraw <i class="fa-solid fa-shield-halved"></i></button>
+        </div>
       </div>
+
+      <!-- STEP 3: STATUS / STRUK PENARIKAN -->
+      <div id="wdStep3" style="display: none; text-align: center;">
+        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+        <h3 style="color: #22c55e; margin-bottom: 4px; font-family:'Teko', sans-serif; font-size:1.6rem;">PENGATURAN WITHDRAW BERHASIL!</h3>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 15px;">Permintaan pencairan saldo sedang diproses secara otomatis oleh sistem gateway server.</p>
+
+        <div class="summary-card">
+          <div class="summary-row"><span>ID Transaksi WD:</span><strong id="wdTrxId">-</strong></div>
+          <div class="summary-row"><span>Tujuan:</span><strong id="wdFinalMethod">-</strong></div>
+          <div class="summary-row"><span>Rekening:</span><strong id="wdFinalAccount">-</strong></div>
+          <div class="summary-row"><span>Nama Penerima:</span><strong id="wdFinalHolder">-</strong></div>
+          <div class="summary-row total"><span>Total Dicairkan:</span><strong id="wdFinalAmount" style="color:#22c55e;">Rp 0</strong></div>
+        </div>
+
+        <div class="process-time-info">
+          <i class="fa-solid fa-clock-rotate-left"></i> Estimasi masuk ke rekening: <strong>1 - 3 Menit</strong>
+        </div>
+
+        <div class="btn-wizard-group" style="margin-top:15px;">
+          <button class="btn-submit" style="background: #334155; color: #fff;" onclick="showToast('Bukti Transaksi berhasil disimpan!', 'success')"><i class="fa-solid fa-download"></i> Simpan Struk</button>
+          <button class="btn-submit btn-wd-gradient" onclick="closeWithdrawModal()">Selesai & Kembali</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -313,7 +413,7 @@
         </div>
       </div>
       <div class="chat-input-row">
-        <input type="text" id="chatInput" class="input-control" placeholder="Ketik pesan (misal: deposit, bonus)..." onkeypress="handleChatKey(event)">
+        <input type="text" id="chatInput" class="input-control" placeholder="Ketik pesan (misal: deposit, withdraw, bonus)..." onkeypress="handleChatKey(event)">
         <button class="btn-submit" style="width:auto; margin-top:0; padding:0 16px;" onclick="sendChatMessage()">KIRIM</button>
       </div>
     </div>
@@ -323,7 +423,7 @@
   <div class="overlay-container" id="topupModal">
     <div class="modal-card modal-topup">
       <div class="modal-head">
-        <h4>TOP UP SALDO</h4>
+        <h4>TOP UP / DEPOSIT SALDO</h4>
         <span style="cursor:pointer; font-weight:700;" onclick="closeTopUpModal()"><i class="fa-solid fa-xmark"></i></span>
       </div>
 
@@ -402,7 +502,7 @@
 
       <!-- STEP 3: STATUS / BUKTI TRANSAKSI -->
       <div id="stepSuccess" style="display: none; text-align: center;">
-        <div class="success-icon">✓</div>
+        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
         <h3 style="color: #22c55e; margin-bottom: 5px;">Top Up Berhasil!</h3>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Transaksi kamu telah diverifikasi oleh sistem.</p>
 

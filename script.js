@@ -72,15 +72,12 @@ let activeProviderFilter = 'all';
    1. SISTEM SINKRONISASI SALDO LINTAS TAB / IFRAME
    --------------------------------------------------- */
 
-// A. Mendengarkan perubahan localStorage secara Real-Time (Antar Tab/Window)
 window.addEventListener('storage', function(e) {
   if (e.key === 'users_db') {
     let db = JSON.parse(e.newValue) || {};
     if (currentUser && db[currentUser]) {
-      // Perbarui Tampilan UI di Header Portal
       updateUserUIDisplay(db[currentUser].balance);
 
-      // Animasi highlight indikator saldo
       const balanceBadge = document.querySelector('.balance-badge');
       if (balanceBadge) {
         balanceBadge.classList.add('balance-highlight-anim');
@@ -90,7 +87,6 @@ window.addEventListener('storage', function(e) {
   }
 });
 
-// B. Mendengarkan saat Tab Utama kembali diklik/difokuskan oleh pengguna
 window.addEventListener('focus', function() {
   if (currentUser) {
     let db = JSON.parse(localStorage.getItem('users_db')) || {};
@@ -100,20 +96,14 @@ window.addEventListener('focus', function() {
   }
 });
 
-// C. Mendengarkan pesan dari iframe game
 window.addEventListener('message', function(event) {
   if (event.data && event.data.type === 'UPDATE_BALANCE') {
     const newBalance = parseFloat(event.data.newBalance);
-    
-    // Perbarui saldo di database lokal (localStorage)
     updateLocalDatabaseBalance(newBalance);
-    
-    // Perbarui Tampilan UI di Header Portal
     updateUserUIDisplay(newBalance);
   }
 });
 
-// Helper untuk memperbarui balance di localStorage users_db
 function updateLocalDatabaseBalance(balance) {
   if (!currentUser) return;
   let db = JSON.parse(localStorage.getItem('users_db')) || {};
@@ -123,7 +113,6 @@ function updateLocalDatabaseBalance(balance) {
   }
 }
 
-// Helper untuk memperbarui tampilan Angka Saldo di UI Header Portal
 function updateUserUIDisplay(balance) {
   const balanceEl = document.getElementById('userBalance');
   if (balanceEl) {
@@ -208,7 +197,6 @@ function goToSlide(index) {
   setPositionByIndex();
 }
 
-// Auto slide banner
 setInterval(() => {
   if (!isDragging && track) {
     currentIndex = (currentIndex + 1) % dots.length;
@@ -260,13 +248,11 @@ function renderGames() {
 function switchCategory(cat, element) {
   activeCategoryFilter = cat;
   
-  // Highlight Sidebar Nav
   document.querySelectorAll('.sidebar-nav .nav-category-item').forEach(el => el.classList.remove('active'));
   if (element) {
     element.classList.add('active');
   }
 
-  // Highlight Bottom Nav (Mobile)
   const bottomItems = document.querySelectorAll('.mobile-bottom-nav .bottom-nav-item');
   bottomItems.forEach(el => el.classList.remove('active'));
   if (cat === 'all' && bottomItems[0]) {
@@ -297,11 +283,9 @@ setInterval(() => {
 /* ---------------- AUTH & USER STATE ---------------- */
 window.onload = function() {
   renderGames();
-  // Cek sesi login saat halaman dimuat
   const activeSession = localStorage.getItem('active_session');
   if (activeSession) {
     currentUser = activeSession;
-    // Ambil data balance terbaru
     let db = JSON.parse(localStorage.getItem('users_db')) || {};
     if (db[currentUser]) {
         updateUserUIDisplay(db[currentUser].balance);
@@ -336,7 +320,6 @@ function handleRegister(e) {
     return;
   }
 
-  // Set saldo awal registrasi (contoh: 50.000)
   db[u] = { password: p, balance: 50000 };
   localStorage.setItem('users_db', JSON.stringify(db));
   showNotify('Sukses', 'Pendaftaran Berhasil! Silakan Login.', '✅');
@@ -353,7 +336,6 @@ function handleLogin(e) {
     currentUser = u;
     localStorage.setItem('active_session', u);
     
-    // Tampilkan animasi sukses login
     const authOverlay = document.getElementById('authOverlay');
     const modalCard = authOverlay.querySelector('.modal-card');
     modalCard.className = 'success-login-card';
@@ -373,11 +355,8 @@ function handleLogin(e) {
         authOverlay.style.display = 'none';
         authOverlay.style.opacity = '1'; 
         resetAuthModalStructure();
-
-        // Update UI Portal dengan saldo dari DB
         updateUserUIDisplay(db[u].balance);
 
-        // Animasi glow pada balance badge
         const balanceBadge = document.querySelector('.balance-badge');
         if (balanceBadge) {
           balanceBadge.classList.add('balance-highlight-anim');
@@ -392,19 +371,12 @@ function handleLogin(e) {
   }
 }
 
-function updateUserUI() {
-  let db = JSON.parse(localStorage.getItem('users_db')) || {};
-  if (db[currentUser]) {
-    updateUserUIDisplay(db[currentUser].balance);
-  }
-}
-
 function handleLogout() {
   localStorage.removeItem('active_session');
   location.reload();
 }
 
-/* ---------------- PROFILE & WITHDRAW SYSTEM ---------------- */
+/* ---------------- PROFILE MODAL ---------------- */
 function openProfileModal() {
   if (!currentUser) { openAuthModal(); return; }
   let db = JSON.parse(localStorage.getItem('users_db')) || {};
@@ -412,8 +384,6 @@ function openProfileModal() {
   document.getElementById('profUser').value = currentUser;
   document.getElementById('profBalance').value = `Rp ${db[currentUser].balance.toLocaleString('id-ID')}`;
   
-  // Default selalu membuka tab informasi akun
-  switchProfileTab('info');
   document.getElementById('profileModal').style.display = 'flex';
 }
 
@@ -421,77 +391,171 @@ function closeProfileModal() {
   document.getElementById('profileModal').style.display = 'none';
 }
 
-function switchProfileTab(tab) {
-  const isInfo = tab === 'info';
-  document.getElementById('panelProfileInfo').style.display = isInfo ? 'block' : 'none';
-  document.getElementById('panelProfileWD').style.display = isInfo ? 'none' : 'block';
+/* ---------------- PRO WITHDRAW WIZARD SYSTEM (3 TAHAP PROFESIONAL) ---------------- */
+let withdrawData = {
+  method: '',
+  amount: 0,
+  accountNum: '',
+  accountHolder: ''
+};
+
+function openWithdrawModal() {
+  if (!currentUser) { openAuthModal(); return; }
   
-  document.getElementById('tabProfileInfo').classList.toggle('active', isInfo);
-  document.getElementById('tabProfileWD').classList.toggle('active', !isInfo);
+  let db = JSON.parse(localStorage.getItem('users_db')) || {};
+  const userBalance = db[currentUser] ? db[currentUser].balance : 0;
+  
+  document.getElementById('wdCurrentBalance').innerText = `Rp ${userBalance.toLocaleString('id-ID')}`;
+  
+  // Reset Form Steps
+  resetWdWizard();
+  document.getElementById('withdrawModal').style.display = 'flex';
 }
 
-function processWithdraw() {
-  if (!currentUser) return;
+function closeWithdrawModal() {
+  document.getElementById('withdrawModal').style.display = 'none';
+}
 
+function resetWdWizard() {
+  document.getElementById('wdStep1').style.display = 'block';
+  document.getElementById('wdStep2').style.display = 'none';
+  document.getElementById('wdStep3').style.display = 'none';
+  
+  updateWdWizardProgress(1);
+  
+  document.getElementById('wdMethod').value = '';
+  document.getElementById('wdAmount').value = '';
+  document.getElementById('wdAccountNum').value = '';
+  document.getElementById('wdAccountHolder').value = '';
+  document.getElementById('wdPassConfirm').value = '';
+  document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
+}
+
+function updateWdWizardProgress(step) {
+  const dot1 = document.getElementById('wdStepDot1');
+  const dot2 = document.getElementById('wdStepDot2');
+  const dot3 = document.getElementById('wdStepDot3');
+  const line1 = document.getElementById('wdStepLine1');
+  const line2 = document.getElementById('wdStepLine2');
+  
+  dot1.className = 'wizard-step' + (step >= 1 ? ' active' : '');
+  dot2.className = 'wizard-step' + (step >= 2 ? ' active' : '');
+  dot3.className = 'wizard-step' + (step >= 3 ? ' active' : '');
+  
+  if (step > 1) dot1.classList.add('completed');
+  if (step > 2) dot2.classList.add('completed');
+  
+  line1.className = 'wizard-line' + (step >= 2 ? ' active' : '');
+  line2.className = 'wizard-line' + (step >= 3 ? ' active' : '');
+}
+
+function selectQuickWdAmount(amount, element) {
+  document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
+  element.classList.add('active');
+  
+  if (amount === 'all') {
+    let db = JSON.parse(localStorage.getItem('users_db')) || {};
+    const currentBal = db[currentUser] ? db[currentUser].balance : 0;
+    document.getElementById('wdAmount').value = currentBal;
+  } else {
+    document.getElementById('wdAmount').value = amount;
+  }
+}
+
+function goToWdStep2() {
   const method = document.getElementById('wdMethod').value;
-  const accountNum = document.getElementById('wdAccountNum').value.trim();
-  const accountHolder = document.getElementById('profAccountHolder').value.trim();
   const rawAmount = document.getElementById('wdAmount').value;
   const amount = parseInt(rawAmount);
 
   let db = JSON.parse(localStorage.getItem('users_db')) || {};
   const currentBalance = db[currentUser] ? db[currentUser].balance : 0;
 
-  // Validasi Input
   if (!method) {
     showToast('Silakan pilih bank/e-wallet tujuan!', 'warning');
     return;
   }
+  if (isNaN(amount) || amount < 50000) {
+    showToast('Minimal penarikan saldo adalah Rp 50.000!', 'warning');
+    return;
+  }
+  if (amount > currentBalance) {
+    showToast('Saldo Anda tidak mencukupi!', 'error');
+    return;
+  }
+
+  withdrawData.method = method;
+  withdrawData.amount = amount;
+
+  document.getElementById('summaryWdMethod').innerText = method;
+  document.getElementById('summaryWdAmount').innerText = `Rp ${amount.toLocaleString('id-ID')}`;
+
+  document.getElementById('wdStep1').style.display = 'none';
+  document.getElementById('wdStep2').style.display = 'block';
+  updateWdWizardProgress(2);
+}
+
+function backToWdStep1() {
+  document.getElementById('wdStep2').style.display = 'none';
+  document.getElementById('wdStep1').style.display = 'block';
+  updateWdWizardProgress(1);
+}
+
+function processFinalWithdraw() {
+  const accountNum = document.getElementById('wdAccountNum').value.trim();
+  const accountHolder = document.getElementById('wdAccountHolder').value.trim();
+  const passConfirm = document.getElementById('wdPassConfirm').value.trim();
+
+  let db = JSON.parse(localStorage.getItem('users_db')) || {};
+  const userObj = db[currentUser];
+
   if (!accountNum) {
-    showToast('Nomor rekening/HP tidak boleh kosong!', 'warning');
+    showToast('Nomor rekening/HP wajib diisi!', 'warning');
     return;
   }
   if (!accountHolder) {
     showToast('Nama pemilik rekening wajib diisi!', 'warning');
     return;
   }
-  if (isNaN(amount) || amount < 50000) {
-    showToast('Minimal withdraw adalah Rp 50.000!', 'warning');
+  if (!passConfirm) {
+    showToast('Masukkan password akun untuk konfirmasi keamanan!', 'warning');
     return;
   }
-  if (amount > currentBalance) {
-    showToast('Saldo Anda tidak mencukupi untuk melakukan withdraw!', 'error');
+  if (passConfirm !== userObj.password) {
+    showToast('Password akun salah! Verifikasi gagal.', 'error');
     return;
   }
 
-  // Tampilkan Indikator Loading Proses
-  showLoading(true);
+  withdrawData.accountNum = accountNum;
+  withdrawData.accountHolder = accountHolder;
+
+  showLoading(true, 'Memverifikasi keamanan & mentransfer saldo...');
 
   setTimeout(() => {
     showLoading(false);
 
     // Potong Saldo di Local Storage
-    db[currentUser].balance -= amount;
+    db[currentUser].balance -= withdrawData.amount;
     localStorage.setItem('users_db', JSON.stringify(db));
 
-    // Perbarui UI Saldo di Header dan Profile Modal
+    // Perbarui UI Saldo Portal
     updateUserUIDisplay(db[currentUser].balance);
     document.getElementById('profBalance').value = `Rp ${db[currentUser].balance.toLocaleString('id-ID')}`;
+    document.getElementById('wdCurrentBalance').innerText = `Rp ${db[currentUser].balance.toLocaleString('id-ID')}`;
 
-    // Reset Form Input
-    document.getElementById('wdMethod').value = '';
-    document.getElementById('wdAccountNum').value = '';
-    document.getElementById('profAccountHolder').value = '';
-    document.getElementById('wdAmount').value = '';
+    // Isi Ringkasan Struk Step 3
+    const trxId = 'WD-' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('wdTrxId').innerText = trxId;
+    document.getElementById('wdFinalMethod').innerText = withdrawData.method;
+    document.getElementById('wdFinalAccount').innerText = withdrawData.accountNum;
+    document.getElementById('wdFinalHolder').innerText = withdrawData.accountHolder;
+    document.getElementById('wdFinalAmount').innerText = `Rp ${withdrawData.amount.toLocaleString('id-ID')}`;
 
-    // Tutup modal dan tampilkan notifikasi sukses
-    closeProfileModal();
-    showNotify(
-      'Withdraw Diproses!',
-      `Penarikan dana sebesar Rp ${amount.toLocaleString('id-ID')} ke ${method} (${accountNum} a/n ${accountHolder}) sedang diproses oleh sistem (Estimasi 1-3 menit).`,
-      '💸'
-    );
-  }, 1200);
+    document.getElementById('wdStep2').style.display = 'none';
+    document.getElementById('wdStep3').style.display = 'block';
+    updateWdWizardProgress(3);
+
+    showToast('Permintaan withdraw berhasil dikirim!', 'success');
+  }, 1500);
 }
 
 /* ---------------- PROMO MODAL ---------------- */
@@ -548,10 +612,10 @@ function sendChatMessage() {
 
 function getSmartResponse(input) {
   if (input.includes('depo') || input.includes('isi') || input.includes('topup') || input.includes('bayar')) {
-    return "Untuk melakukan Deposit, silakan klik tombol [⚡ DEPOSIT] di bagian navigasi bawah atau atas. Minimal deposit hanya Rp 10.000 via QRIS, Bank, atau E-Wallet.";
+    return "Untuk melakukan Deposit, silakan klik tombol [DEPOSIT] pada menu Akun atau tombol melayang di bawah. Minimal deposit Rp 10.000 via QRIS & Bank.";
   }
   if (input.includes('wd') || input.includes('withdraw') || input.includes('tarik')) {
-    return "Penarikan dana (Withdraw) dapat diproses melalui menu Akun Profil. Minimal penarikan saldo adalah Rp 50.000 dengan estimasi proses 1-3 menit.";
+    return "Penarikan dana (Withdraw) kini dilengkapi dengan sistem 3 Tahap Profesional di menu Profil -> Klik Tombol WITHDRAW. Minimal penarikan Rp 50.000.";
   }
   if (input.includes('promo') || input.includes('bonus') || input.includes('event')) {
     return "Bonus New Member 100% & Cashback Harian 0.8% tersedia di menu [Promosi]. Anda bisa mengklaimnya secara gratis!";
@@ -559,34 +623,19 @@ function getSmartResponse(input) {
   if (input.includes('gacor') || input.includes('rtp') || input.includes('menang')) {
     return "Game Majok Ways 2 (Pragmatic) saat ini memiliki pola RTP tertinggi mencapai 98.8%. Silakan dicoba Bossku!";
   }
-  if (input.includes('halo') || input.includes('p') || input.includes('min')) {
-    return "Halo! Ada yang bisa Customer Service VIP bantu mengenai kendala akun Anda?";
-  }
-  return "Terima kasih atas pertanyaannya. Tim CS VIP kami telah mencatat pesan Anda. Mohon pastikan akun Anda sudah terverifikasi untuk kemudahan transaksi.";
+  return "Terima kasih atas pertanyaannya. Tim CS VIP kami siap melayani 24/7 untuk kenyamanan transaksi Anda.";
 }
 
-/* ---------------- FULLSCREEN GAME ENGINE ---------------- */
+/* ---------------- GAME ENGINE ---------------- */
 function openGame(url) {
   if (!currentUser) { 
     openAuthModal(); 
     return; 
   }
-  
-  // Membuka game langsung di tab baru
   window.open(url, '_blank');
 }
 
-function closeGame() {
-  const container = document.getElementById('fullscreenGameContainer');
-  const iframe = document.getElementById('gameFrame');
-  
-  if (container && iframe) {
-    iframe.src = '';
-    container.style.display = 'none';
-  }
-}
-
-/* ---------------- NEW TOP UP SYSTEM FLOW ---------------- */
+/* ---------------- TOP UP SYSTEM FLOW ---------------- */
 let currentTopUpData = {
   amount: 0,
   adminFee: 0,
@@ -644,7 +693,7 @@ function processTopUpInput() {
     return;
   }
 
-  showLoading(true);
+  showLoading(true, 'Membuat tagihan transaksi...');
 
   setTimeout(() => {
     showLoading(false);
@@ -666,7 +715,7 @@ function processTopUpInput() {
     document.getElementById('stepInput').style.display = 'none';
     document.getElementById('stepSummary').style.display = 'block';
 
-    startPaymentTimer(120);
+    startPaymentTimer(600);
   }, 1000);
 }
 
@@ -705,7 +754,7 @@ function toggleAccordion(element) {
 }
 
 function simulateWebhookSuccess() {
-  showLoading(true);
+  showLoading(true, 'Memverifikasi pembayaran...');
 
   setTimeout(() => {
     showLoading(false);
@@ -713,10 +762,8 @@ function simulateWebhookSuccess() {
 
     let db = JSON.parse(localStorage.getItem('users_db')) || {};
     if (db[currentUser]) {
-      // Tambah saldo
       db[currentUser].balance += currentTopUpData.amount;
       localStorage.setItem('users_db', JSON.stringify(db));
-      // Update UI Portal
       updateUserUIDisplay(db[currentUser].balance);
     }
 
@@ -727,7 +774,7 @@ function simulateWebhookSuccess() {
     document.getElementById('stepSummary').style.display = 'none';
     document.getElementById('stepSuccess').style.display = 'block';
 
-    showToast(`Top Up Rp${currentTopUpData.amount.toLocaleString('id-ID')} berhasil! Saldo kamu telah diperbarui.`, "success");
+    showToast(`Top Up Rp${currentTopUpData.amount.toLocaleString('id-ID')} berhasil! Saldo diperbarui.`, "success");
   }, 1200);
 }
 
@@ -744,9 +791,11 @@ function showToast(message, type = 'info') {
   }, 3500);
 }
 
-function showLoading(state) {
+function showLoading(state, text = 'Memproses transaksi...') {
   const loading = document.getElementById('loadingOverlay');
+  const loadingText = document.getElementById('loadingText');
   if (loading) {
+    if (loadingText) loadingText.innerText = text;
     loading.style.display = state ? 'flex' : 'none';
   }
 }
