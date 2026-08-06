@@ -493,20 +493,38 @@ body {
 @keyframes floatAnim { 0% { transform: translateY(0px) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
 
 .bet-modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px); z-index: 10050;
-    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-    display: flex; align-items: flex-end; justify-content: center;
+    position: fixed; top: 0; left: 0; 
+    width: 100vw; 
+    height: 100dvh; /* Menggunakan dvh agar pas dengan browser mobile */
+    background: rgba(0, 0, 0, 0.7); 
+    backdrop-filter: blur(3px); 
+    z-index: 10050;
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.3s ease;
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: center;
+    box-sizing: border-box;
 }
+
 .bet-modal-overlay.open { opacity: 1; pointer-events: auto; }
 
 .bet-bottom-sheet {
-    width: 100%; max-width: 420px; background: #19191d;
-    border-top: 2px solid rgba(255, 255, 255, 0.1); border-radius: 20px 20px 0 0;
-    padding: 18px 16px 28px 16px; box-sizing: border-box;
+    width: 100%; 
+    max-width: 420px; 
+    max-height: 85dvh; /* Membatasi tinggi maksimal 85% dari viewport */
+    overflow-y: auto;  /* Mengaktifkan scroll jika konten terlalu panjang */
+    background: #19191d;
+    border-top: 2px solid rgba(255, 255, 255, 0.1); 
+    border-radius: 20px 20px 0 0;
+    padding: 16px 16px 20px 16px; /* Padding bawah sedikit dikurangi agar muat */
+    box-sizing: border-box;
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
-    transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: translateY(100%); 
+    transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1);
 }
+
 .bet-modal-overlay.open .bet-bottom-sheet { transform: translateY(0); }
 
 .bet-header { display: flex; justify-content: center; position: relative; color: #ffffff; margin-bottom: 20px; }
@@ -579,7 +597,13 @@ body {
 .amount-val { color: #6e5424; font-weight: bold; font-size: 14px; transition: color 0.2s; }
 .amount-val.selected { color: #e5a93c; font-size: 16px; font-weight: bold; }
 
-.bet-modal-footer { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; margin-top: 22px; }
+.bet-modal-footer { 
+    display: grid; 
+    grid-template-columns: 1fr 2fr; 
+    gap: 12px; 
+    margin-top: 14px; /* Dikurangi dari 22px agar tidak terlalu mendorong tombol ke bawah */
+}
+
 .bet-foot-btn {
     padding: 13px; border-radius: 10px; font-size: 14px; font-weight: bold;
     cursor: pointer; border: none; font-family: sans-serif; transition: transform 0.1s;
